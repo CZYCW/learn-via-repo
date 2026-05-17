@@ -189,7 +189,6 @@ skill 的方法论基于教育学和信息架构领域的 11 个理论（Feynman
 
 ## 致谢
 
-- 方法论的核心思想来自 OpenClaw 项目（[`docs/learning/TEACHING-STYLE.md`](https://github.com/openclaw/openclaw)）的 2-3 个月实战提炼
 - 11 个教育理论支撑来自计算机教育研究领域的几十年积累——感谢 Papert / Maton / Sweller / Vygotsky / Bloom / Bayer / Procida / Brown / Newman / Simon Brown / Morville 等学者
 - 这个 skill 由 Claude（Anthropic）协作产出，方法论作者全程参与设计决策
 - 感谢 Anthropic 发起并开源 [Agent Skills 标准](https://agentskills.io)，让这个 skill 能跨 30+ agent runtime 复用
