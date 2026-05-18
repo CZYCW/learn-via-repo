@@ -46,26 +46,25 @@ skill 触发后会生成一套完整的教学产物（10 个一级目录的 mark
 
 ## 快速开始
 
-详见 [INSTALL.md](./INSTALL.md)。简短版（90% 的 agent runtime 都通用）：
+### Claude Code（验证过的方式）
+
+一行装好：
 
 ```bash
-# 1. clone 这个 repo
-git clone https://github.com/CZYCW/learn-via-repo.git
-
-# 2. 把 skill 放到你 agent runtime 的 skills 目录
-# 不同 runtime 路径不同，常见有：
-#   Claude Code:    ~/.agents/skills/
-#   Cursor:         ~/.cursor/skills/
-#   Codex:          ~/.codex/skills/
-#   通用 fallback:   你 agent 文档指定的 skills 目录
-ln -s $(pwd)/learn-via-repo ~/.agents/skills/learn-via-repo
-
-# 3. 在 agent 里触发
-# 直接对话："用这个 repo 教我 AI agent"
-# 或调用：/learn-via-repo (如果 runtime 支持 slash command)
+mkdir -p ~/.claude/skills && git clone https://github.com/CZYCW/learn-via-repo.git ~/.claude/skills/learn-via-repo
 ```
 
-不同 agent runtime 的安装路径见 [INSTALL.md §不同 runtime 的安装方式](./INSTALL.md)。
+**完全重启 Claude Code**（不是只关窗口——CLI 用户 `exit` 退出后重开；桌面 app 用户 ⌘Q 后再 launch）。
+
+在 Claude Code 里输入 `/learn-via-repo` 或者说"用这个 repo 教我 AI agent"——skill 会按 Phase 0 流程开口问你。
+
+### 其他 Agent Skills 兼容 runtime
+
+详见 [INSTALL.md](./INSTALL.md)——里面列了 Cursor / Codex / Gemini CLI / GitHub Copilot / Goose / OpenHands 等 14+ runtime 的官方 skills 文档链接。
+
+### 装好之后不工作？
+
+看 [INSTALL.md 的故障排查段](./INSTALL.md#故障排查learn-via-repo-找不到怎么办)——90% 问题是路径放错或没重启 Claude Code。
 
 ---
 
