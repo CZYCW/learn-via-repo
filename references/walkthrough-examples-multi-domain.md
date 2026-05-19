@@ -6,6 +6,28 @@
 
 ---
 
+## 目录（Table of Contents）
+
+- **示例一：Web 框架领域 / Express** —— middleware 链 walkthrough
+  - §0 通用视角 —— Pipe-and-Filter 架构思想
+  - §1 这个模块解决什么问题 —— middleware 注册 + 链调度
+  - §2 核心概念 —— middleware / Layer / Router / next / 错误冒泡
+  - §3 整体架构 —— 主 Router + Sub Router 嵌套
+  - §4 最简对照法实战 —— 30 行最简 vs Express 实际代码
+  - §5 代码导航 —— 从 app.handle 到 layer.handle_request
+  - §6 检验问题 / §7 对用户项目的启发 / §8 延伸阅读
+- **示例二：数据库内核领域 / SQLite** —— B-tree cursor walkthrough
+  - §0 通用视角 —— Bayer & McCreight 1971 B-tree 理论
+  - §1 这个模块解决什么问题 —— 数据按页组织 + cursor 状态机
+  - §2 核心概念 —— Page / Cell / Cursor / BtNode / WAL
+  - §3 整体架构 —— SELECT 从 SQL 到 cursor 的完整 mermaid 图
+  - §4 最简对照法实战 —— 15 行最简 cursor vs SQLite 实际代码
+  - §5 代码导航 —— 从 OP_OpenRead 到 sqlite3BtreeNext
+  - §6 检验问题 / §7 对用户项目的启发 / §8 延伸阅读
+- **怎么用这两个示例** —— 给 AI 的指引 + 跨领域 9 章模板是稳定的论证
+
+---
+
 ## 示例一：Web 框架领域 / Express
 
 **假设场景**：学生想学 Web 后端框架，目标 repo 选了 [expressjs/express](https://github.com/expressjs/express)。学生在 stage-0 跑通了某个"几百行 from scratch 实现 Express middleware"的 beginner repo（具体由 Phase 2C 搜索 + 用户评估决定）。

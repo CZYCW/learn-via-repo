@@ -1,6 +1,26 @@
 # 教学产物目录结构规范
 
-> repo-learner 生成的所有教学产物必须遵循本文档定义的目录骨架。结构基于 Diátaxis 框架（软件文档四象限）+ Cognitive Apprenticeship（认知学徒制 6 阶段）+ Bloom 分类法（认知层级）+ Information Architecture wayfinding 原则。理论依据见 `theory.md`。
+> learn-via-repo 生成的所有教学产物必须遵循本文档定义的目录骨架。结构基于 Diátaxis 框架（软件文档四象限）+ Cognitive Apprenticeship（认知学徒制 6 阶段）+ Bloom 分类法（认知层级）+ Information Architecture wayfinding 原则。理论依据见 `theory.md`。
+
+---
+
+## 目录（Table of Contents）
+
+- **§1. 完整目录骨架** —— 10 个一级目录速览图
+- **§2. 每个目录的职责**
+  - §2.1 README.md（根目录）—— 学生入口，含"小白友好开场段"模板
+  - §2.2 meta/ —— 教学方法论 + 学习路径 + 进度跟踪
+  - §2.2b stage-0-fundamentals/ —— 动手前置（V2 新增，A/B/C/D 级学生生成）
+  - §2.3 stage-1-foundations/ —— 领域全局认知（不读代码）
+  - §2.4 stage-2-architecture/ —— repo 架构原理（不深入代码）
+  - §2.5 stage-3-walkthroughs/ —— 老师带读代码（最简对照法五步）
+  - §2.6 stage-4-applied/ —— 应用到用户目标项目
+  - §2.7 reference/ —— 横切，事实查询
+  - §2.8 exercises/ —— 横切，题库（与 walkthrough 配对生成）
+  - §2.9 resources/ —— 横切，外部材料 Tier 1/2/3
+- **§3. 产物之间的引用关系**
+- **§4. 文件命名约定**
+- **§5. 生成策略** —— Phase 3 的 6 批顺序
 
 ---
 

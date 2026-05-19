@@ -46,25 +46,25 @@ skill 触发后会生成一套完整的教学产物（10 个一级目录的 mark
 
 ## 快速开始
 
-### Claude Code（验证过的方式）
-
-一行装好：
+一行装好（适用所有 51+ agent runtime——Claude Code / Cursor / Codex / Gemini CLI 等都行）：
 
 ```bash
-mkdir -p ~/.claude/skills && git clone https://github.com/CZYCW/learn-via-repo.git ~/.claude/skills/learn-via-repo
+npx skills add CZYCW/learn-via-repo
 ```
 
-**完全重启 Claude Code**（不是只关窗口——CLI 用户 `exit` 退出后重开；桌面 app 用户 ⌘Q 后再 launch）。
+CLI 会**自动检测**你装了哪些 agent，让你选装到哪里，自动放对路径。完全不用记路径。
 
-在 Claude Code 里输入 `/learn-via-repo` 或者说"用这个 repo 教我 AI agent"——skill 会按 Phase 0 流程开口问你。
+完成后**完全重启** agent（CLI 用 `exit` 重开；桌面 app ⌘Q 后再 launch；IDE 插件重启 IDE），然后在 agent 里输入 `/learn-via-repo` 或直接说"用这个 repo 教我 AI agent"——skill 会按 Phase 0 流程开口问你。
 
-### 其他 Agent Skills 兼容 runtime
+### 想要更多控制？
 
-详见 [INSTALL.md](./INSTALL.md)——里面列了 Cursor / Codex / Gemini CLI / GitHub Copilot / Goose / OpenHands 等 14+ runtime 的官方 skills 文档链接。
+- 完整 CLI 选项（指定 agent / 全局 vs 项目 / 跳过确认等）见 [INSTALL.md](./INSTALL.md)
+- 不能用 npm 的环境（无网络 / 限制环境）：[INSTALL.md 手动安装段](./INSTALL.md#手动安装不能用-npm-时的备选)
+- 装好但 `/learn-via-repo` 不出来？看 [INSTALL.md 故障排查](./INSTALL.md#故障排查learn-via-repo-找不到怎么办)——90% 问题是没完全重启 agent。
 
-### 装好之后不工作？
+### 在 marketplace 上发现
 
-看 [INSTALL.md 的故障排查段](./INSTALL.md#故障排查learn-via-repo-找不到怎么办)——90% 问题是路径放错或没重启 Claude Code。
+也可以在 [skills.sh](https://skills.sh) 搜 "learn-via-repo" 看页面再点装。
 
 ---
 
