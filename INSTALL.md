@@ -1,82 +1,82 @@
-# 安装指南
+# Install Guide
 
-> 这个 skill 遵循 [Agent Skills 开放标准](https://agentskills.io)，可通过 [skills.sh marketplace](https://skills.sh) 发现，支持 51+ agent runtime。
+> This skill follows the [Agent Skills open standard](https://agentskills.io), is discoverable on the [skills.sh marketplace](https://skills.sh), and works across 51+ agent runtimes.
 
 ---
 
-## 推荐方式：用 `npx skills` 一行装好（适用所有 agent）
+## Recommended: install in one line with `npx skills` (works for all agents)
 
-[Vercel Labs 出的 `skills` CLI](https://github.com/vercel-labs/skills) 是整个 Agent Skills 生态的标准安装工具——**自动检测你用的 agent，自动放对路径**。你不用懂任何路径。
+[Vercel Labs' `skills` CLI](https://github.com/vercel-labs/skills) is the standard install tool for the entire Agent Skills ecosystem — it **auto-detects the agent you're using and puts files in the right path**. You don't need to know any paths.
 
-### 最简一行（交互式）
+### Simplest one-liner (interactive)
 
 ```bash
 npx skills add CZYCW/learn-via-repo
 ```
 
-CLI 会问你：
+The CLI will ask you:
 
-1. **装到哪些 agent？**（它会自动检测你装了 Claude Code / Cursor / Codex / Gemini CLI 等，让你勾选）
-2. **Project 还是 Global？**（Project = 仅当前项目可用、跟 git 一起共享；Global = 所有项目都能用）
-3. **Symlink 还是 Copy？**（推荐 symlink——多个 agent 共享一份，更新方便）
+1. **Which agents to install for?** (It auto-detects what you have — Claude Code / Cursor / Codex / Gemini CLI etc — and lets you check boxes)
+2. **Project or Global?** (Project = only for the current project, shared via git; Global = available in every project)
+3. **Symlink or Copy?** (Recommended: symlink — multiple agents share one source, easier to update)
 
-回答完自动装到正确路径。完成。
+Answer those and it installs to the right location. Done.
 
-### 进阶选项
+### Advanced options
 
 ```bash
-# 全局装到 Claude Code，跳过所有确认（CI/CD 友好）
+# Install globally for Claude Code, skip all prompts (CI/CD friendly)
 npx skills add CZYCW/learn-via-repo -g -a claude-code -y
 
-# 同时装到多个 agent
+# Install for multiple agents at once
 npx skills add CZYCW/learn-via-repo -g -a claude-code -a cursor -a codex
 
-# 先列出 repo 里有什么 skill 不装
+# List skills in the repo without installing
 npx skills add CZYCW/learn-via-repo --list
 
-# 装到当前项目（不是全局）
-npx skills add CZYCW/learn-via-repo  # 默认是 project 范围
+# Install for current project (not global)
+npx skills add CZYCW/learn-via-repo  # default is project scope
 ```
 
-完整 CLI 命令见 [vercel-labs/skills README](https://github.com/vercel-labs/skills#readme)。
+Full CLI reference: [vercel-labs/skills README](https://github.com/vercel-labs/skills#readme).
 
-### 重启 agent（关键步骤！）
+### Restart the agent (critical step!)
 
-装完之后**必须完全重启 agent**——agent 启动时才扫 skills 目录。
+After installing, you **must fully restart the agent** — agents only scan the skills directory at startup.
 
-- **Claude Code CLI**：`exit` 退出当前 session，再 `claude` 重开
-- **Claude Code 桌面 app**：⌘Q 完全退出，再 launch
-- **Cursor / VSCode-based agents**：重启 IDE
-- **其他 CLI agent**：退出当前 session 再重开
+- **Claude Code CLI**: `exit` the current session, then `claude` to reopen
+- **Claude Code desktop app**: ⌘Q to fully quit, then launch again
+- **Cursor / VSCode-based agents**: restart the IDE
+- **Other CLI agents**: exit the current session and reopen
 
-### 验证
+### Verify
 
-重启后在 agent 里输入：
+After restarting, in the agent type:
 
 ```
 /learn-via-repo
 ```
 
-或者直接说"用这个 repo 教我 AI agent"——skill 会按 Phase 0 流程开口问你。
+Or just say "use this repo to teach me AI agents" — the skill will kick off the Phase 0 flow.
 
 ---
 
-## 手动安装（不能用 npm 时的备选）
+## Manual install (when you can't use npm)
 
-如果你没装 Node.js，或在限制网络的环境，可以手动 clone + symlink。
+If you don't have Node.js, or you're in a restricted-network environment, you can clone and symlink manually.
 
-### 步骤 1：clone 这个 repo
+### Step 1: clone this repo
 
 ```bash
-cd ~/projects  # 你习惯的位置
+cd ~/projects  # wherever you keep things
 git clone https://github.com/CZYCW/learn-via-repo.git
 ```
 
-### 步骤 2：按你用的 agent 把 skill 链接 / 复制到对应路径
+### Step 2: link or copy the skill to your agent's path
 
-下表来自 [vercel-labs/skills 的 supported agents 列表](https://github.com/vercel-labs/skills#supported-agents)——**这是官方真相**：
+The table below comes from [vercel-labs/skills supported agents](https://github.com/vercel-labs/skills#supported-agents) — **this is the source of truth**:
 
-| Agent | 全局路径（`-g`） | 项目路径（默认） |
+| Agent | Global path (`-g`) | Project path (default) |
 |-------|----------------|----------------|
 | **Claude Code** | `~/.claude/skills/` | `./.claude/skills/` |
 | **Cursor** | `~/.cursor/skills/` | `./.agents/skills/` |
@@ -96,53 +96,53 @@ git clone https://github.com/CZYCW/learn-via-repo.git
 | **Cline / Dexto / Warp** | `~/.agents/skills/` | `./.agents/skills/` |
 | **Antigravity** | `~/.gemini/antigravity/skills/` | `./.agents/skills/` |
 
-剩下 30 多个 agent 的路径见 [vercel-labs/skills README 完整表](https://github.com/vercel-labs/skills#supported-agents)。
+For the other 30+ agents, see the full table in [vercel-labs/skills README](https://github.com/vercel-labs/skills#supported-agents).
 
-### 步骤 3：用软链接关联
+### Step 3: symlink it
 
-以 **Claude Code 全局** 为例：
+For **Claude Code, global**:
 
 ```bash
 mkdir -p ~/.claude/skills
 ln -s ~/projects/learn-via-repo ~/.claude/skills/learn-via-repo
 ```
 
-以 **Cursor 当前项目** 为例：
+For **Cursor, current project**:
 
 ```bash
 mkdir -p ./.agents/skills
 ln -s ~/projects/learn-via-repo ./.agents/skills/learn-via-repo
 ```
 
-### 步骤 4：完全重启 agent + 验证
+### Step 4: fully restart the agent and verify
 
-跟上面"npx skills 推荐方式"的最后两步一样。
+Same as the last two steps of "Recommended: npx skills" above.
 
 ---
 
-## 故障排查：`/learn-via-repo` 找不到怎么办
+## Troubleshooting: `/learn-via-repo` doesn't show up
 
-按下面顺序逐条排查，90% 的问题在前 3 项。
+Work through this list in order — 90% of the time the answer is in the first three.
 
-### 1. 确认文件确实在你 agent 看的路径里
+### 1. Check that the file actually lives in the path your agent reads
 
-先确认你用的是什么 agent，对照上表找路径。例如你用 Claude Code 全局：
+Figure out which agent you're using, look up the path in the table above. For Claude Code global:
 
 ```bash
 ls -la ~/.claude/skills/learn-via-repo/SKILL.md
 ```
 
-应该看到这个文件存在。如果"No such file"——上一步装错位置了，重新装。
+You should see the file. If you get "No such file" — you installed to the wrong location. Reinstall.
 
-**最常见错误**：你以为装到了 Claude Code 路径，实际装到了别的 agent 路径。`npx skills add` 装的时候会告诉你装到哪里——看回放。
+**Most common mistake**: you think you installed to the Claude Code path but actually installed to another agent's. `npx skills add` tells you where it put files during install — scroll up and read the output.
 
-### 2. 确认 SKILL.md 的 frontmatter 没坏
+### 2. Check that the SKILL.md frontmatter isn't broken
 
 ```bash
-head -5 ~/.claude/skills/learn-via-repo/SKILL.md  # 路径按你 agent 替换
+head -5 ~/.claude/skills/learn-via-repo/SKILL.md  # adjust path for your agent
 ```
 
-应该看到：
+You should see:
 
 ```
 ---
@@ -151,137 +151,137 @@ description: "..."
 ---
 ```
 
-如果 `name:` 那一行缺失或拼错，agent 不认这个 skill。
+If the `name:` line is missing or wrong, the agent won't recognize the skill.
 
-### 3. 完全重启 agent
+### 3. Fully restart the agent
 
-**这是最常被忽略的一步**。agent **启动时**才扫 skill 目录——新增 skill 后必须重启。
+**This is the step people skip most often.** Agents scan the skills directory **at startup** — a new skill won't show up until you restart.
 
-- CLI：`exit` 退出当前 session，再重新开
-- 桌面 app：⌘Q 完全退出，再 launch
-- IDE 插件：重启 IDE
+- CLI: `exit` the current session, then reopen
+- Desktop app: ⌘Q to fully quit, then launch again
+- IDE plugin: restart the IDE
 
-重启后再试 `/learn-via-repo`。
+Then try `/learn-via-repo` again.
 
-### 4. 用 `npx skills list` 检查
+### 4. Check with `npx skills list`
 
 ```bash
 npx skills list
 ```
 
-这会列出你所有 agent 装了哪些 skill。看看 `learn-via-repo` 是不是在列表里。
+This lists every skill installed across every agent. Look for `learn-via-repo`.
 
-不在 → 回到 1-2-3 步。
+If it's not there → go back to steps 1-3.
 
-### 5. 用 agent 自带的诊断命令
+### 5. Use the agent's own diagnostics
 
-各 agent 有自己的诊断方式：
+Each agent has its own:
 
-- **Claude Code**：在 agent 里跑 `/doctor`，看 skill 列表
-- **Cursor**：Settings → Skills，看是否出现
+- **Claude Code**: run `/doctor` in the agent and look at the skills list
+- **Cursor**: Settings → Skills
 
-### 6. 还不行，提 issue
+### 6. Still no luck? Open an issue
 
-把 `npx skills list` 完整输出 + 上面 1-5 步的输出贴到 [issue 区](https://github.com/CZYCW/learn-via-repo/issues/new) 我帮你看。
+Paste the full output of `npx skills list` plus what you ran in steps 1-5 into a [new issue](https://github.com/CZYCW/learn-via-repo/issues/new) and I'll take a look.
 
 ---
 
-## 卸载
+## Uninstall
 
-### 用 npx skills 装的
+### If you installed via npx skills
 
 ```bash
 npx skills remove learn-via-repo
 ```
 
-会问你从哪些 agent 卸载，选完确认。
+It'll ask which agents to uninstall from. Confirm and you're done.
 
-### 手动装的
+### If you installed manually
 
 ```bash
-rm ~/.claude/skills/learn-via-repo  # 或者你装到的位置
-# 软链方式：上面这条只删软链，不影响源 repo
-# clone 方式：rm -rf 整个目录
+rm ~/.claude/skills/learn-via-repo  # or wherever you put it
+# Symlink: this only removes the link, the source repo is untouched
+# Clone: rm -rf the whole directory if you no longer need it
 ```
 
 ---
 
-## 更新到最新版
+## Update to the latest version
 
-### 用 npx skills 装的
+### If you installed via npx skills
 
 ```bash
 npx skills update learn-via-repo
-# 或者更新所有 skill
+# or update everything
 npx skills update
 ```
 
-### 手动装的（软链方式）
+### If you installed manually (symlink)
 
 ```bash
-cd ~/projects/learn-via-repo  # 你 clone 的源位置
+cd ~/projects/learn-via-repo  # the source you cloned to
 git pull
 ```
 
-软链关联的所有 agent 都会自动看到更新。
+All the symlinked agents see the update automatically.
 
-### 手动装的（copy 方式）
+### If you installed manually (copy)
 
 ```bash
 cd ~/projects/learn-via-repo
 git pull
-cp -r . ~/.claude/skills/learn-via-repo  # 重新拷贝
+cp -r . ~/.claude/skills/learn-via-repo  # recopy
 ```
 
 ---
 
-## 常见问题
+## FAQ
 
-### Q: 我已经按旧文档装到 `~/.agents/skills/learn-via-repo/` 了，怎么修？
+### Q: I already installed to `~/.agents/skills/learn-via-repo/` from an older version of the docs. How do I fix it?
 
-那是 Cline / Dexto / Warp 几个特定 agent 的全局路径——**不是 Claude Code 看的路径**。Claude Code 看的是 `~/.claude/skills/`。
+`~/.agents/skills/` is the global path for a few specific agents (Cline / Dexto / Warp) — **not** the path Claude Code reads. Claude Code reads `~/.claude/skills/`.
 
-修法：
+Fix:
 
 ```bash
-# 1. 卸掉错误位置
+# 1. Remove the wrong location
 rm -rf ~/.agents/skills/learn-via-repo
 
-# 2. 用 npx skills 重新装
+# 2. Reinstall via npx skills
 npx skills add CZYCW/learn-via-repo
 
-# 3. 完全重启 agent
+# 3. Fully restart the agent
 ```
 
-抱歉之前的文档错了，跨 agent 路径太多我没逐一验证。这次按 vercel-labs/skills 的 supported-agents 表写，是真相。
+Sorry the older docs were wrong — too many cross-agent paths to verify one by one. This version follows the vercel-labs/skills supported-agents table, which is the source of truth.
 
-### Q: 我用的 agent runtime 不在上面列表里，怎么办？
+### Q: My agent runtime isn't in the table above. What do I do?
 
-`npx skills` CLI 支持 51+ agent，可能你的也在里面。先跑 `npx skills add CZYCW/learn-via-repo` 看 CLI 是否能自动检测到你的 agent。
+The `npx skills` CLI supports 51+ agents, so yours might already be in there. Try `npx skills add CZYCW/learn-via-repo` and see if the CLI auto-detects it.
 
-如果检测不到——查你 agent 的官方文档找 skills 目录路径，按"手动安装"步骤 3 软链上去。
+If it can't — check your agent's official docs for the skills directory path, then symlink to it following manual install Step 3.
 
-如果 agent 完全不支持 Agent Skills 标准——只能 fallback 到把 `SKILL.md` 的内容贴进 runtime 的 system prompt / custom instructions / context 配置。**这种方式会丢失 progressive disclosure 的优势**（所有内容一次性加载），可能撑爆 context window。
+If your agent has no support for the Agent Skills standard at all — your only fallback is to paste the contents of `SKILL.md` into the runtime's system prompt / custom instructions / context config. **You lose the progressive disclosure benefit this way** (everything loads up front), which might blow your context window.
 
-### Q: 我可以同时装多个版本（main + dev）吗？
+### Q: Can I install both a main version and a dev version side by side?
 
-可以——把 dev 版的 `SKILL.md` frontmatter 里 `name: learn-via-repo` 改成 `name: learn-via-repo-dev`，再用 `npx skills add` 装。两个 name 不冲突，能并存。
+Yes — change the `name:` field in the dev version's `SKILL.md` frontmatter from `name: learn-via-repo` to `name: learn-via-repo-dev`, then install it with `npx skills add`. Two different names don't conflict.
 
-### Q: 生成的教学产物存到哪？
+### Q: Where do the generated teaching artifacts get saved?
 
-skill 会问你"教学产物目录放哪儿"——默认 `~/Desktop/learning/{repo-name}/`，你可以自定义。教学产物完全独立于 skill 本身，不会污染 skills 目录。
+The skill asks where to put them. Default is `~/Desktop/learning/{repo-name}/` — you can pick anywhere else. The artifacts are completely separate from the skill itself; they don't pollute the skills directory.
 
-### Q: skill 调用了 WebSearch / WebFetch，但我用的 agent 不支持，怎么办？
+### Q: The skill calls WebSearch / WebFetch, but my agent doesn't support those. What now?
 
-skill 的 Phase 2 / 2C 需要 WebSearch + WebFetch 找 repo 候选。如果 agent 不支持这两个工具，skill 会：
+The skill's Phase 2 / 2C uses WebSearch + WebFetch to find candidate repos. If your agent doesn't have those tools, the skill falls back to:
 
-1. 退化为让你自己提供 repo 候选名（你贴 GitHub URL）
-2. AI 用 `references/multi-domain-examples.md` 的起点 candidate 作为推荐
+1. Asking you to provide repo candidates yourself (paste GitHub URLs)
+2. Using the seed candidates in `references/multi-domain-examples.md` as suggestions
 
-但**会损失"AI 给你真实搜+验证后的候选评估"这个核心步骤**。建议尽量用支持 WebSearch 的 agent（Claude Code / Cursor / Codex 都支持）。
+But you lose the core "AI runs a real search and gives you vetted candidates to evaluate" step. If you can, use an agent with WebSearch (Claude Code / Cursor / Codex all support it).
 
 ---
 
-## 反馈
+## Feedback
 
-测试中遇到问题？看 [TESTING.md](./TESTING.md) 的反馈模板，或直接[提 issue](https://github.com/CZYCW/learn-via-repo/issues/new)。
+Hit a problem while testing? See the feedback template in [TESTING.md](./TESTING.md), or [open an issue](https://github.com/CZYCW/learn-via-repo/issues/new).

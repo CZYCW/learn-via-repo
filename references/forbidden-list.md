@@ -1,331 +1,331 @@
-# 禁忌清单（绝不允许）
+# Forbidden List (Things Never Allowed)
 
-> 教学红线。skill 在生成产物和实际教学时，**任何情况下不可越过**本清单。每条禁忌都来自实战中失败的教训。
-
----
-
-## §1. 概念禁忌
-
-### ❌ 在没有展示最简实现的情况下，直接展示 repo 的复杂代码
-
-**为什么禁止**：学生看不见骨架，只看到一堆类型签名 / 错误处理 / 并发锁，会觉得"复杂 = 难，我学不会"。
-
-**正确做法**：先写 30-100 行最简版，让学生看到骨架；再展示 repo 的工业级版本；最后解释"多出来的是为了更健壮，不是更多概念"。
+> Teaching red lines. When generating artifacts or actually teaching, **never cross** this list. Every item came from a real failure.
 
 ---
 
-### ❌ 描述一个概念超过 3 句话，不给对应的代码或例子
+## §1. Concept taboos
 
-**为什么禁止**：概念抽象 + 没有锚点 = 学生背诵但不理解。
+### ❌ Show the repo's complex code without first showing a minimal implementation
 
-**正确做法**：每个概念 1 句话定义 + 1 个具体例子（Unpack）+ 1 个回到术语的总结（Repack）。
+**Why forbidden**: the student can't see the skeleton, just a pile of type signatures / error handling / concurrency locks — they'll think "complex = hard, I can't learn this."
 
----
-
-### ❌ 说"代码很复杂但先别管细节"
-
-**为什么禁止**：这句话承认"我没办法把复杂讲清楚"，是教学失败的遮羞布。
-
-**正确做法**：必须给出足够的"骨架"让复杂度合理化。如果真的复杂，用最简对照法五步把复杂拆开。如果还是讲不清楚，说明你自己还没真正理解——回去理解再讲。
+**Right move**: write 30-100 lines of minimal version first, let the student see the skeleton; then show the repo's industrial version; finally explain "the extras make it more robust, not more concepts."
 
 ---
 
-## §2. 代码禁忌
+### ❌ Describe a concept for more than 3 sentences without giving matching code or an example
 
-### ❌ 展示代码不给 file:line 引用
+**Why forbidden**: abstract concept + no anchor = the student memorizes but doesn't understand.
 
-**为什么禁止**：学生无法回到 repo 验证。所有代码引用必须能精确定位。
-
-**正确做法**：每段 repo 代码必须有 `// {file}:{line}` 注释，或文字中写 `attempt.ts:1627` 这种 file:line 格式。
+**Right move**: every concept: one-sentence definition + one concrete example (Unpack) + one summary back to the term (Repack).
 
 ---
 
-### ❌ 展示超过 50 行代码而不用注释标注重点行
+### ❌ Say "the code is complex but don't worry about the details"
 
-**为什么禁止**：学生不知道关注什么。50 行没标注的代码 = 50 行噪音。
+**Why forbidden**: that phrase admits "I can't make this complexity clear" — a cover for teaching failure.
 
-**正确做法**：长代码段必须用 `// 关键行：` 或 `// 对应最简版的：` 注释标 3-5 个重点行，其余行可以略过。
-
----
-
-### ❌ 跳过"工业级增强"解释
-
-**为什么禁止**：学生会觉得 repo 的代码是神秘的、复杂的、自己写不出来的。失去信心。
-
-**正确做法**：每展示一段比最简版复杂的 repo 代码，立刻解释多出的部分是为什么（并发 / 错误处理 / 性能 / 类型安全等）。**每条多出来的都有"为什么"**。
+**Right move**: you must provide enough "skeleton" to make the complexity reasonable. If it really is complex, use the five steps of the Minimal Comparison Method to break it apart. If you still can't explain it, that means you don't fully understand it yourself — go figure it out and come back.
 
 ---
 
-### ❌ 从 `entry.ts` 或 `index.ts` 开始讲
+## §2. Code taboos
 
-**为什么禁止**：初始化代码是噪音最多的地方——一堆模块导入、配置加载、依赖注入，跟"这个 repo 在做什么"无关。学生从这里开始会迷失。
+### ❌ Show code without a file:line reference
 
-**正确做法**：从"一条消息的路径"开始。找到用户输入的入口（如 HTTP handler、CLI 命令），跟着数据流走。
+**Why forbidden**: the student can't go back to the repo to verify. Every code reference must be precisely locatable.
 
----
-
-## §3. 节奏禁忌
-
-### ❌ 超过 20 分钟不检验理解
-
-**为什么禁止**：认知负荷在 20 分钟达到峰值。不检验，学生只是被动接受信息。
-
-**正确做法**：每 15-20 分钟设一个检查点。要么是 Feynman 检验，要么是 file:line 定位，要么是"你来复述刚才那段"。
+**Right move**: every repo code block must have a `// {file}:{line}` comment, or `attempt.ts:1627` style inline reference in prose.
 
 ---
 
-### ❌ 学生说"明白了"就继续
+### ❌ Show more than 50 lines of code without marking the key lines
 
-**为什么禁止**："明白了"是社交回应，不是理解证据。学生为了不让老师失望，会假装明白。
+**Why forbidden**: the student doesn't know what to focus on. 50 lines unmarked = 50 lines of noise.
 
-**正确做法**：永远用 Feynman 检验——"用一句话不用术语告诉我刚才那个东西解决了什么问题"。说不出来 = 没明白。
-
----
-
-### ❌ 一次性讲超过 3 个核心概念
-
-**为什么禁止**：认知负荷理论（Sweller）证明：人的工作记忆一次只能持有 4±1 个 chunk。超过 3 个就是认知过载。
-
-**正确做法**：一次教学最多 3 个核心概念。第 4 个出现时，要么砍掉，要么拆成下一节课。
+**Right move**: long code blocks must mark 3-5 key lines with `// Key line:` or `// Corresponds to the minimal version's:` comments. The rest can be skipped.
 
 ---
 
-### ❌ 讲完具体例子不回到技术术语（语义波只下不上）
+### ❌ Skip the "industrial enhancements" explanation
 
-**为什么禁止**：学生会具体例子但无法迁移到其他场景。下了"具体例子"的电梯，没回到"技术术语"的楼层。
+**Why forbidden**: the student will feel the repo's code is mysterious, complex, something they couldn't write themselves. Loss of confidence.
 
-**正确做法**：每个具体例子讲完，立刻 Repack——"用 {术语 1} {术语 2} 重新表达刚才那个例子"。
-
----
-
-### ❌ 讲代码时跳过"高层级代码框架"直接进入最简实现
-
-**为什么禁止**：地图先于骨架。学生不知道这段代码在 repo 的哪个位置、跟周围怎么连，看到的最简实现也是孤立的。
-
-**正确做法**：先 Step 0 代码地图（3-5 个核心文件的调用链 file:line 路径图），再 Step 1 最简实现。
+**Right move**: every time you show repo code that's more complex than the minimal version, immediately explain why the extras exist (concurrency / error handling / performance / type safety etc). **Every extra line has a "why."**
 
 ---
 
-### ❌ 讲概念不引入外部高质量材料
+### ❌ Start teaching from `entry.ts` or `index.ts`
 
-**为什么禁止**：闭门造车的解释往往不到位，错过了已经被论文/权威博客一句话击穿的核心洞察。
+**Why forbidden**: initialization code is the noisiest place — a pile of module imports, config loading, dependency injection — none of which is about "what this repo does." Starting here makes students get lost.
 
-**正确做法**：每个核心概念，主动搜索 1 篇 Tier 1 权威材料（论文 / 大厂工程博客 / 领域权威综述），引用它的核心实验数据或图表，立刻 Repack 到目标 repo。
-
----
-
-## §4. 风格禁忌
-
-### ❌ 用"简单来说"、"基本上"这样的模糊措辞
-
-**为什么禁止**：这些词是"我没想清楚怎么准确表达"的遮羞布。学生听到这些词会自动降低信任度。
-
-**正确做法**：用准确的措辞。如果想不出准确措辞，说明你自己还没想清楚——回去想清楚再讲。
+**Right move**: start from "one message's path." Find the user-input entry point (HTTP handler, CLI command), follow the data flow.
 
 ---
 
-### ❌ 说"你可以自己去看代码"
+## §3. Pacing taboos
 
-**为什么禁止**：这是"我不教了，你自己摸索吧"。如果学生能自己看，他不会找你教。
+### ❌ Go more than 20 minutes without a check
 
-**正确做法**：必须给出具体的 file:line 和读代码步骤（分轮次，每轮一个目标 + 时间估计）。
+**Why forbidden**: cognitive load peaks around 20 minutes. Without a check, the student is just passively receiving information.
 
----
-
-### ❌ 在没有对照表的情况下声称"repo 实现了 X 概念"
-
-**为什么禁止**：没有对照表 = 学生没法验证你说的是真的。
-
-**正确做法**：每个"repo 实现了 X 概念"的声明，必须配三列对照表（通用概念 / repo 代码位置 / 说明）。
+**Right move**: a checkpoint every 15-20 minutes. Either a Feynman check, or a file:line location task, or "you summarize that block back to me."
 
 ---
 
-## §5. Beginner repo 选材禁忌（V2 新增）
+### ❌ Move on when the student says "got it"
 
-`stage-0-fundamentals/` 的 beginner repo 选材有专门的硬约束。Phase 2C 搜索 + 用户评估时严格执行。
+**Why forbidden**: "got it" is a social response, not evidence of understanding. Students fake understanding to not disappoint the teacher.
 
-### ❌ 推荐掩盖该领域核心控制流骨架的成熟框架抽象
+**Right move**: always use the Feynman check — "in one sentence, no jargon, tell me what problem that thing solves." Can't say it = doesn't get it.
 
-**抽象原则**（跨领域统一）：任何把该领域的**核心控制流**封装到"几行 API 调用"背后的成熟框架都不合适。学生学到的是框架 API，不是底层原理。
+---
 
-**判断方法**（跨领域统一）：打开 repo README 的核心示例代码，能否看见**该领域的骨架元素**？
+### ❌ Teach more than 3 core concepts in one session
 
-每个领域的骨架元素不同，详见 `multi-domain-examples.md` §1 "关键骨架元素"列：
+**Why forbidden**: cognitive-load theory (Sweller) proves working memory holds at most 4±1 chunks. Above 3 = overload.
 
-- **AI Agent**：`messages.append({role, content})` + `if stop_reason == "tool_use": execute_tool(...)` + ReAct 三元组
-- **Web 框架**：`next(err)` 链调用 + `req` / `res` 对象传递 + 中间件签名
-- **数据库内核**：Btree cursor 操作 + opcode dispatch loop + 行/页 IO
-- **编译器/解释器**：TokenScanner + ASTNode 构造 + Visitor 模式
-- **OS 内核**：trap frame 保存 + 调度队列 + page table 切换
-- **游戏引擎**：game loop tick + ECS 组件查询 + 渲染队列
-- **分布式系统**：log entry append + AppendEntries RPC + commit index 推进
+**Right move**: at most 3 core concepts per lesson. When a 4th appears, either cut it or split it into the next lesson.
 
-**看得见 = 合格**；**看不见**（被 `agent.run()` / `Agent(...).execute(...)` / `framework.handle(req)` / `engine.query(sql)` 等一行 API 替代）= 不合格。
+---
 
-**已知不合格框架列表（按领域分类，非穷举）**——遇到新框架按上面"判断方法"判断：
+### ❌ Stop at the concrete example without returning to the technical term (semantic wave down only)
 
-#### AI Agent 领域
-- LangChain 系列：`langchain` / `langchain_core` / `langchain_anthropic` / `langchain_openai`
-- LangGraph：`langgraph`
-- LlamaIndex：`llamaindex` / `llama_index`
-- CrewAI：`crewai`
-- AutoGen：`autogen` / `autogen_agentchat` / `autogen_core`
-- Microsoft：`semantic_kernel` / `microsoft-agent-framework` / `azure-ai-foundry-agent`
-- OpenAI：`agents`（OpenAI Agents SDK）/ `openai-agents`
-- HuggingFace：`smolagents`
-- Haystack：`haystack`
+**Why forbidden**: the student understands the concrete example but can't transfer it. They took the elevator down to "concrete example" but never came back up to "technical term."
 
-#### Web 框架领域（不是说框架本身不好，是 stage-0 不应该用它们学骨架）
-- 后端：`nestjs` / `hapi` / `adonisjs` / `spring` / `spring-boot` / `django`（高层框架）/ `rails` / `laravel`
-- 前端：`react`（要学组件原理 → 用 mini-react）/ `vue`（要学 reactivity → 用 mini-vue）/ `angular`（高度抽象）
-- 全栈：`next.js` / `nuxt.js` / `remix`（路由+SSR 都封装了）
+**Right move**: after every concrete example, immediately Repack — "now describe that example using {term 1} {term 2}."
 
-#### 数据库领域
-- ORM 类：`sqlalchemy` / `typeorm` / `prisma` / `hibernate` / `gorm` / `activerecord`
-- 高级查询封装：`mongoose` / `sequelize`
-- 注：学数据库**内核** → beginner repo 不能是 ORM；学 ORM 设计 → beginner repo 不能基于现成 ORM
+---
 
-#### 编译器/解释器领域
-- `babel`（高度封装的现代版，不适合学编译器原理）/ `swc`
-- TypeScript compiler（黑盒）/ `tsc`
-- LLVM 高级 binding（如 `inkwell`）—— LLVM C++ 内核可以学，但 binding 把它当黑盒
+### ❌ Skip the "high-level code map" and go straight to the minimal implementation
 
-#### OS 内核领域
-- `docker` / `k8s`（不是 OS 内核，是高层调度框架）
-- `systemd`（启动框架，不是内核）
-- 容器 runtime 如 `runc`（基于内核，不是内核本身）
+**Why forbidden**: map before skeleton. The student doesn't know where this code lives in the repo or how it connects to the surroundings — the minimal implementation feels isolated.
 
-#### 游戏引擎领域
-- `unity` / `unreal-engine` / `godot`（引擎黑盒，看不见 game loop / ECS / 渲染管线）
-- `phaser` / `pixi.js`（前端游戏框架，封装了渲染）
+**Right move**: do Step 0 (code map: file:line call chain across 3-5 core files) first, then Step 1 (minimal implementation).
 
-#### 分布式系统领域
-- `k8s controller-runtime`（封装了 reconcile loop）
+---
+
+### ❌ Teach a concept without bringing in external high-quality material
+
+**Why forbidden**: home-grown explanations often miss the mark — they skip the core insight a paper or authoritative blog has already nailed in one sentence.
+
+**Right move**: for each core concept, actively search for 1 Tier 1 authoritative material (paper / big-company engineering blog / domain authoritative survey), cite its key data or figure, immediately Repack to the target repo.
+
+---
+
+## §4. Style taboos
+
+### ❌ Use vague phrasing like "simply put" or "basically"
+
+**Why forbidden**: those phrases are covers for "I didn't think this through clearly." When students hear them, their trust drops automatically.
+
+**Right move**: use precise phrasing. If you can't think of precise phrasing, you don't have the idea clearly yet — go think, come back.
+
+---
+
+### ❌ Say "you can go look at the code yourself"
+
+**Why forbidden**: that's "I'm done teaching, you figure it out." If the student could go look themselves, they wouldn't have come to you.
+
+**Right move**: must give a concrete file:line and reading steps (in rounds, each round one goal + time estimate).
+
+---
+
+### ❌ Claim "the repo implements concept X" without a comparison table
+
+**Why forbidden**: no comparison table = the student can't verify what you said is true.
+
+**Right move**: every "the repo implements X" claim must come with a three-column comparison table (general concept / repo code location / explanation).
+
+---
+
+## §5. Beginner repo selection taboos (added in V2)
+
+The beginner repos for `stage-0-fundamentals/` have specific hard constraints. Phase 2C search + user evaluation must enforce them strictly.
+
+### ❌ Recommend mature framework abstractions that hide the domain's core control flow
+
+**Abstract principle** (cross-domain): any mature framework that wraps the domain's **core control flow** behind "a few lines of API calls" is unsuitable. The student learns framework APIs, not first-principles.
+
+**Judgment method** (cross-domain): open the repo's README example code. Can you see the **domain's skeleton elements**?
+
+Each domain's skeleton elements are different — see `multi-domain-examples.md` §1 "key skeleton elements" column:
+
+- **AI agents**: `messages.append({role, content})` + `if stop_reason == "tool_use": execute_tool(...)` + ReAct triplet
+- **Web frameworks**: `next(err)` chain + `req` / `res` object passing + middleware signatures
+- **Database internals**: B-tree cursor ops + opcode dispatch loop + row/page IO
+- **Compilers / interpreters**: TokenScanner + ASTNode construction + Visitor pattern
+- **OS kernels**: trap frame save + scheduler queue + page table switch
+- **Game engines**: game loop tick + ECS component queries + render queue
+- **Distributed systems**: log entry append + AppendEntries RPC + commit index advance
+
+**Visible = qualified**; **invisible** (replaced by a single API call like `agent.run()` / `Agent(...).execute(...)` / `framework.handle(req)` / `engine.query(sql)`) = disqualified.
+
+**Known disqualifying framework list (per domain, non-exhaustive)** — when you hit a new framework, apply the "judgment method" above:
+
+#### AI agent domain
+- LangChain family: `langchain` / `langchain_core` / `langchain_anthropic` / `langchain_openai`
+- LangGraph: `langgraph`
+- LlamaIndex: `llamaindex` / `llama_index`
+- CrewAI: `crewai`
+- AutoGen: `autogen` / `autogen_agentchat` / `autogen_core`
+- Microsoft: `semantic_kernel` / `microsoft-agent-framework` / `azure-ai-foundry-agent`
+- OpenAI: `agents` (OpenAI Agents SDK) / `openai-agents`
+- HuggingFace: `smolagents`
+- Haystack: `haystack`
+
+#### Web framework domain (these frameworks aren't bad — they're just not what you learn the skeleton from in stage-0)
+- Backend: `nestjs` / `hapi` / `adonisjs` / `spring` / `spring-boot` / `django` (high-level framework) / `rails` / `laravel`
+- Frontend: `react` (to learn component principles → use mini-react) / `vue` (to learn reactivity → use mini-vue) / `angular` (highly abstract)
+- Fullstack: `next.js` / `nuxt.js` / `remix` (routing + SSR all wrapped)
+
+#### Database domain
+- ORM family: `sqlalchemy` / `typeorm` / `prisma` / `hibernate` / `gorm` / `activerecord`
+- High-level query wrappers: `mongoose` / `sequelize`
+- Note: to learn database **internals** → beginner repo can't be an ORM; to learn ORM design → beginner repo can't be built on an existing ORM
+
+#### Compiler / interpreter domain
+- `babel` (highly wrapped modern version, bad for learning compiler principles) / `swc`
+- TypeScript compiler (black box) / `tsc`
+- LLVM high-level binding (like `inkwell`) — the LLVM C++ core is learnable, but the binding treats it as a black box
+
+#### OS kernel domain
+- `docker` / `k8s` (not an OS kernel — a high-level scheduling framework)
+- `systemd` (init framework, not a kernel)
+- Container runtimes like `runc` (built on the kernel, not the kernel itself)
+
+#### Game engine domain
+- `unity` / `unreal-engine` / `godot` (engine is a black box — you can't see the game loop / ECS / render pipeline)
+- `phaser` / `pixi.js` (frontend game frameworks that wrap rendering)
+
+#### Distributed systems domain
+- `k8s controller-runtime` (wraps the reconcile loop)
 - `spring-cloud` / `consul-template`
-- 服务网格客户端（如 `istio-client`）
+- Service mesh clients (like `istio-client`)
 
-**为什么禁止**：详见上面"判断方法"——这些框架抽象掩盖了该领域的核心控制流骨架。学生学到 framework API 而非领域原理，进入 stage-3 走读复杂工业代码时仍然抽象。
+**Why forbidden**: see the "judgment method" above — these framework abstractions hide the domain's core control flow. The student learns framework APIs, not domain principles, and stage-3's deep reads of complex industrial code still feel abstract.
 
-**例外**：如果学生**已经熟悉**该框架，并且**目标 repo 就是这个框架本身**（如学 LangChain → 目标 repo 是 langchain），那么 stage-0 应该选**框架内部某个模块的简化实现**，不是基于框架的应用 repo。
+**Exception**: if the student is **already familiar** with the framework, and **the target repo is the framework itself** (e.g., learning LangChain → target repo is langchain), then stage-0 should pick **a simplified implementation of one of the framework's internal modules**, not an application built on the framework.
 
-### ❌ AI 凭印象指认某个 repo "合格"
+### ❌ AI declares a repo "qualified" from memory
 
-错误示例（v2 升级期实际发生过）：
-- 把 `microsoft/ai-agents-for-beginners` 当合格示例（实际它基于 Microsoft Agent Framework + Azure AI Foundry）
-- 把 `anthropic-cookbook` 当 stage-0 教学主线（实际它是 cookbook 不是 curriculum）
+Wrong examples (actually happened during the v2 upgrade):
+- Treating `microsoft/ai-agents-for-beginners` as qualified (it's actually based on Microsoft Agent Framework + Azure AI Foundry)
+- Treating `anthropic-cookbook` as the stage-0 main teaching line (it's a cookbook, not a curriculum)
 
-**正确做法**：Phase 2C 用 WebSearch 搜出候选 → 用 WebFetch 验证 README 没有上述框架的 import → 把 3-5 个候选**给用户**评估 → 用户确认后才能写入 `stage-0-fundamentals/recommended-repos.md`。**AI 不独断指认**。
+**Right move**: Phase 2C uses WebSearch to find candidates → WebFetch verifies the README has no framework imports → 3-5 candidates handed **to the user** for evaluation → only after user confirmation, write into `stage-0-fundamentals/recommended-repos.md`. **The AI doesn't unilaterally pick.**
 
-### ❌ 只是"权威机构出品"就当教学
+### ❌ Treat "authoritative producer" as automatically meaning "good for teaching"
 
-权威性（star 数、大厂背书）不等于"适合教学"。教学的硬指标是：
-- 递进结构（先教 A 再教 B）
-- 概念铺垫（每个新概念前有 1 段铺垫）
-- 最简对照（先展示骨架再加复杂度）
+Authority (star count, big-company backing) ≠ "good for teaching." The hard criteria for teaching are:
+- Progressive structure (teach A then B)
+- Concept setup (a paragraph of setup before each new concept)
+- Minimal comparison (skeleton first, then complexity)
 
-反例：anthropic-cookbook（43.1k stars + Anthropic 官方）是 **cookbook** 不是 **curriculum**——14 个独立 notebook 没递进，每个 notebook 直接上完整版没铺垫。**作为 reference Tier 1 完美，作为 stage-0 教学主线不合格**。
+Counter-example: anthropic-cookbook (43.1k stars + official from Anthropic) is a **cookbook**, not a **curriculum** — 14 independent notebooks with no progression, each notebook drops the complete version with no setup. **As a Tier 1 reference it's perfect; as the stage-0 main teaching line it's disqualified.**
 
-适用判断：
-- ✅ 教学型 stage-0：递进 curriculum / step-by-step tutorial / 配套博文/视频
-- ❌ 非教学型（归入 reference/）：cookbook / quickstart / production demo
-
----
-
-## §5b. 元教训（V2 升级期总结的 3 条）
-
-这些教训来自 v2 升级过程中实际犯过的错误，AI 必须内化避免再犯。
-
-### 元教训 1：LLM provider 类型不是排除标准
-
-错误：把"必须 cloud API（OpenAI/Anthropic），不接受本地 LLM（Ollama/GGUF）"当硬约束。
-
-为什么错：从"理解 agent 原理"的角度，`ollama.chat()` 和 `openai.chat.completions.create()` **骨架完全一样**——都是"发 prompt 收 response"。学生学的是 agent loop 骨架，不是 LLM provider。装 Ollama 也就 5-10 分钟。
-
-正确做法：把 LLM provider 从硬约束**降级为 Phase 1 偏好问题**：
-- "你愿意装 Ollama + 下 GGUF 模型，还是想用 API key 立刻跑起来？"
-- 两条路径都能学到 agent 原理，让学生选
-
-被错误排除而应该升档的强候选：
-- rasbt/mini-coding-agent（850 stars + Sebastian Raschka 大牛 + 本地 Ollama）
-- pguso/agents-from-scratch (Python, 703 stars + 本地 GGUF)
-
-### 元教训 2：cookbook ≠ curriculum
-
-错误：把"权威机构出品 + 高 star + 内容相关"等同于"适合 stage-0 教学主线"。
-
-为什么错：anthropic-cookbook (43.1k stars) 是 14 个**独立** notebook，每个解决一个具体问题，**没有递进结构**、**没有概念铺垫**、**没有最简对照**。学生进去会迷失："我先点哪个？"
-
-正确做法：明确区分两种文档：
-- **教学型**（curriculum / step-by-step）→ stage-0/1/2/3 主线
-- **参考型**（cookbook / quickstart / demo）→ reference/ + stage-3 §4.1 引用源 + resources/ Tier 1
-
-判断标准：打开 README，问"作者有没有说'先看第一课，再看第二课'？"
-
-### 元教训 3：AI 不能独断挑选 repo
-
-错误：AI 凭训练数据印象指认"X repo 是合格的权威最简实现"。
-
-为什么错：训练数据可能过时；AI 可能没真读过该 repo 的 README；某个 repo 可能从无框架转向用框架但 AI 不知道。
-
-实际案例：
-- v2 升级初期，AI 在 methodology.md 里写"以 microsoft/ai-agents-for-beginners 为例"作为合格示例 → 用户指正：它基于 Semantic Kernel/AutoGen，不合格
-
-正确做法：Phase 2C 必须**真实执行**：
-1. WebSearch 搜出 5-10 个候选
-2. WebFetch 每个候选的 README，验证 import 列表
-3. 把候选 + 评估表给用户
-4. 用户评估、确认或否决后才能写入 `stage-0-fundamentals/`
-
-`SKILL.md` Phase 2C 必须明确这个交互步骤——不能省略。
+Applicable judgment:
+- ✅ Teaching-type stage-0: progressive curriculum / step-by-step tutorial / companion blog or video
+- ❌ Non-teaching type (goes into reference/): cookbook / quickstart / production demo
 
 ---
 
-## §6. 元禁忌（关于禁忌的禁忌）
+## §5b. Meta-lessons (3 summarized during the V2 upgrade)
 
-### ❌ 用"用户偏好"来绕开禁忌清单
+These came from real mistakes during the v2 upgrade. The AI must internalize them to avoid repeats.
 
-**为什么禁止**：禁忌清单是方法论的硬约束，不是风格偏好。
+### Meta-lesson 1: LLM provider type is not an exclusion criterion
 
-学生可以说"我喜欢中文/英文"、"我喜欢更短的课"、"我不要类比"——这些是风格偏好，可以接受。
+Mistake: treating "must be cloud API (OpenAI/Anthropic), don't accept local LLM (Ollama/GGUF)" as a hard constraint.
 
-学生**不能**说："我已经懂了，跳过检查点 A 吧"——这是用户在用社交压力让老师降低标准，会导致教学失败。老师必须坚持执行检查点。
+Why wrong: from "understanding agent principles" perspective, `ollama.chat()` and `openai.chat.completions.create()` have **the exact same skeleton** — both are "send a prompt, receive a response." What the student is learning is the agent-loop skeleton, not the LLM provider. Installing Ollama takes 5-10 minutes.
+
+Right move: demote LLM provider from hard constraint to **a Phase 1 preference question**:
+- "Would you like to install Ollama + download a GGUF model, or would you rather use an API key and run immediately?"
+- Both paths teach agent principles; let the student pick
+
+Strong candidates that were wrongly excluded and should be upgraded:
+- rasbt/mini-coding-agent (850 stars + Sebastian Raschka big name + local Ollama)
+- pguso/agents-from-scratch (Python, 703 stars + local GGUF)
+
+### Meta-lesson 2: cookbook ≠ curriculum
+
+Mistake: treating "authoritative producer + high star + relevant content" as equivalent to "good as the stage-0 main teaching line."
+
+Why wrong: anthropic-cookbook (43.1k stars) is 14 **independent** notebooks, each solving a specific problem, with **no progressive structure**, **no concept setup**, **no minimal comparison**. The student enters and gets lost: "Which one do I look at first?"
+
+Right move: clearly distinguish two types of doc:
+- **Teaching-type** (curriculum / step-by-step) → stage-0/1/2/3 main line
+- **Reference-type** (cookbook / quickstart / demo) → reference/ + stage-3 §4.1 reference source + resources/ Tier 1
+
+Judgment: open the README and ask "did the author say 'first look at lesson 1, then lesson 2'?"
+
+### Meta-lesson 3: the AI cannot unilaterally pick repos
+
+Mistake: the AI declares "X repo is a qualified authoritative minimal implementation" based on training-data impressions.
+
+Why wrong: training data may be stale; the AI may not have actually read the repo's README; a repo may have switched from framework-free to framework-based and the AI doesn't know.
+
+Real case:
+- Early in the v2 upgrade, the AI wrote "for example microsoft/ai-agents-for-beginners" in methodology.md as a qualified sample → user corrected: it's based on Semantic Kernel / AutoGen, not qualified.
+
+Right move: Phase 2C must **actually execute**:
+1. WebSearch for 5-10 candidates
+2. WebFetch each candidate's README, verify the import list
+3. Hand candidates + evaluation table to the user
+4. After user evaluation, confirmation, or rejection — only then write into `stage-0-fundamentals/`
+
+`SKILL.md` Phase 2C must make this interaction step explicit — cannot skip it.
 
 ---
 
-### ❌ 用"这次特殊"来豁免禁忌
+## §6. Meta-taboos (taboos about taboos)
 
-**为什么禁止**：每次都"特殊"，禁忌清单就变成了装饰品。
+### ❌ Use "user preference" to bypass the forbidden list
 
-如果真的需要破例，必须显式记录在 `meta/progress.md`，并标注"破例的代价"——下次教学时回看，确认这次破例是否合理。
+**Why forbidden**: the forbidden list is the methodology's hard constraint, not a style preference.
+
+The student can say "I prefer Chinese / English," "I prefer shorter lessons," "I don't want analogies" — those are style preferences, fine.
+
+The student **cannot** say "I already get it, skip Checkpoint A" — that's using social pressure to make the teacher lower the bar, leading to teaching failure. The teacher must enforce the checkpoint.
 
 ---
 
-## §7. 自检清单
+### ❌ Use "this case is special" to grant exceptions
 
-每次生成 walkthrough 或开展教学后，对照本清单自检：
+**Why forbidden**: every case is "special" — the forbidden list becomes decoration.
 
-- [ ] 没有在缺少最简实现的情况下展示 repo 代码
-- [ ] 每个概念都有 1 句定义 + 具体例子 + 术语 Repack
-- [ ] 所有代码引用都带 file:line
-- [ ] 长代码段都有 ≤5 个重点行标注
-- [ ] 每段 repo 代码都有"工业级增强为什么"解释
-- [ ] 没有从 entry.ts/index.ts 开始
-- [ ] 教学过程中每 ≤20 分钟有一个检查点
-- [ ] 学生说"明白了"都做了 Feynman 检验
-- [ ] 一次教学的核心概念 ≤3 个
-- [ ] 每个具体例子都做了术语 Repack
-- [ ] 讲代码前展示了代码地图（Step 0）
-- [ ] 每个核心概念都引入了 1 篇外部 Tier 1 材料
-- [ ] 没有用"简单来说"、"基本上"等模糊措辞
-- [ ] 没有让学生"自己去看代码"
-- [ ] 每个"repo 实现了 X"的声明都有对照表
+If you really need to make an exception, explicitly record it in `meta/progress.md`, and mark "the cost of the exception" — review at next lesson to confirm whether the exception was reasonable.
 
-### V2 新增检查项（抽象原则）
+---
 
-- [ ] stage-0 推荐 repo 经过 Phase 2C 真实搜索（WebSearch + WebFetch 验证 README/imports），不是 AI 凭训练数据印象指认
-- [ ] stage-0 推荐 repo 由用户从 3-5 个候选中评估确认，不是 AI 独断挑选
-- [ ] stage-0 推荐 repo 从**第一性原理**出发——只用底层 API（无论远程托管推理还是本地推理）+ 标准库，**不**被任何掩盖 agent loop 骨架的框架抽象覆盖
-- [ ] 教学材料的判定基于"**教学结构**"（递进 + 概念铺垫 + 最简对照），**不**基于权威性 / star / 实现完整度等"易混淆指标"
-- [ ] **参考型资源**（cookbook / quickstart / API SDK 文档 / production demo）归入 `reference/` 或 stage-3 §4.1 引用源，**不**作为 stage-0/1/2 教学主线
-- [ ] walkthrough §4.1 必有"引用源 + 摘要双区块"，引用的是真实存在、可运行、有社区/作者背书的代码，**不是** AI 临场发挥
-- [ ] §4.1 的引用源带精确 file:line 和"为什么是权威最简实现"说明
+## §7. Self-check list
+
+After every walkthrough generated or every lesson taught, check yourself against this list:
+
+- [ ] Didn't show repo code without first showing a minimal implementation
+- [ ] Every concept has a one-sentence definition + concrete example + term Repack
+- [ ] Every code reference has file:line
+- [ ] Long code blocks have ≤5 key-line annotations
+- [ ] Every repo code section has an "industrial-enhancements why" explanation
+- [ ] Didn't start from entry.ts / index.ts
+- [ ] A checkpoint every ≤20 minutes during the lesson
+- [ ] When the student says "got it," did a Feynman check
+- [ ] ≤3 core concepts per lesson
+- [ ] Every concrete example did a term Repack
+- [ ] Showed the code map (Step 0) before showing code
+- [ ] Every core concept brought in 1 Tier 1 external material
+- [ ] No vague phrasing like "simply put" / "basically"
+- [ ] Didn't tell the student "go read the code yourself"
+- [ ] Every "the repo implements X" claim has a comparison table
+
+### V2 additions (abstract principles)
+
+- [ ] stage-0 recommended repos passed a real Phase 2C search (WebSearch + WebFetch verified README / imports) — not AI memory-based picks
+- [ ] stage-0 recommended repos were confirmed by the user from 3-5 candidates — not AI unilateral picks
+- [ ] stage-0 recommended repos start from **first principles** — only low-level API (remote hosted or local inference) + standard library, **not** covered by any framework abstraction that hides the agent-loop skeleton
+- [ ] Teaching materials are judged by "**teaching structure**" (progression + concept setup + minimal comparison), **not** by authority / star / implementation completeness / other "easily confused metrics"
+- [ ] **Reference-type resources** (cookbook / quickstart / API SDK docs / production demos) go into `reference/` or stage-3 §4.1 sources, **not** stage-0/1/2 main teaching lines
+- [ ] walkthrough §4.1 always has "source-reference + summary as two code blocks"; the reference is real, runnable, community/author-vetted code — **not** AI improvisation
+- [ ] §4.1's source references include precise file:line and "why this is the authoritative minimal implementation" explanation

@@ -1,436 +1,438 @@
-# learn-via-repo 教学方法论
+# learn-via-repo Teaching Methodology
 
-> 这是 learn-via-repo skill 的核心方法论。skill 在生成教学产物以及实际教学时，每一步都要遵守本文档。
+> This is the core methodology of the learn-via-repo skill. Every step the skill takes — generating teaching artifacts and actually teaching — must follow this document.
 >
-> 方法论从 `~/Desktop/projects/openclaw/docs/learning/TEACHING-STYLE.md` 抽象而来，已在 AI Agent 领域教学（OpenClaw）中验证有效。**V3 泛化到任何软件工程领域**——本文档示例以 AI Agent 为主，跨领域类比锚点见 `multi-domain-examples.md` §1（含 Web 框架 / 数据库内核 / OS 内核 / 编译器 / 游戏引擎 / 分布式系统 等领域的对应映射）。
+> The methodology is abstracted from `~/Desktop/projects/openclaw/docs/learning/TEACHING-STYLE.md` and validated in AI-agent teaching (OpenClaw). **V3 generalized it to any software engineering domain** — examples in this doc are mostly AI-agent flavored; cross-domain anchors live in `multi-domain-examples.md` §1 (which maps each concept to web frameworks / database internals / OS kernels / compilers / game engines / distributed systems / ...).
 
 ---
 
-## 目录（Table of Contents）
+## Table of Contents
 
-- **§1. 教学哲学** —— 三个成功标准 + 根本禁忌
-- **§2. 概念与原理教学哲学**
-  - §2.1 Feynman 技术 —— 不接受"我懂了"，用一句话不用术语检验
-  - §2.2 外部资料驱动 —— 引入权威材料击穿核心 Why
-  - §2.3 语义波（Semantic Waves） —— 概念 → 具体 → 回到概念
-- **§3. 三层递进结构** —— 为什么 / 是什么 / 怎么实现
-- **§4. 最简对照法（核心方法）**
-  - §4.0 Step 0：高层级代码框架（代码地图）
-  - §4.1 Step 1：找权威最简实现 —— 三级优先级，AI 不临场写
-  - §4.2 Step 2：展示目标 repo 对应代码（file:line + 注释）
-  - §4.3 Step 3：写三列对照表
-  - §4.4 Step 4：写"工业级增强"解释
-- **§5. 代码导航法** —— 永远从一条请求的路径开始
-- **§6. 教学节奏（单次教学 45-60 分钟）** —— 检查点 A/B 触发位置
-- **§7. 检验问题的核心要求** —— 必须可代码验证
-- **§8. 这套方法论的适用范围与不可妥协性**
-
----
-
-## §1. 教学哲学
-
-**核心目标**：让学生能**独立追踪代码**，而不只是"听懂了老师讲的"。
-
-判断教学是否成功的 3 个标准——学生能否独立完成：
-
-1. 打开目标 repo 的一个陌生模块文件，定位到核心逻辑
-2. 用自己的话解释"这段代码在干嘛，为什么这样写"
-3. 把代码行为和已知的领域概念对应起来
-
-**根本禁忌**：让学生感到"听了但还是看不懂代码"。这是教学失败，不是学生学习能力不足。
+- **§1. Teaching philosophy** — three success criteria + the fundamental taboo
+- **§2. Concept and principle teaching philosophy**
+  - §2.1 Feynman technique — don't accept "I get it"; check with one sentence, no jargon
+  - §2.2 External-material driven — bring in authoritative material to land the core Why
+  - §2.3 Semantic waves — concept → concrete → back to concept
+- **§3. Three-layer progression** — why / what / how
+- **§4. Minimal Comparison Method (core method)**
+  - §4.0 Step 0: high-level code map
+  - §4.1 Step 1: find an authoritative minimal implementation — three-tier priority, AI doesn't improvise
+  - §4.2 Step 2: show the target repo's matching code (file:line + comments)
+  - §4.3 Step 3: write a three-column comparison table
+  - §4.4 Step 4: write the "industrial-strength enhancements" explanation
+- **§5. Code navigation** — always start from one request's path
+- **§6. Lesson pacing (one 45-60 min lesson)** — where Checkpoints A/B fire
+- **§7. Core requirement for test questions** — must be code-verifiable
+- **§8. The methodology's scope and what can't be compromised**
 
 ---
 
-## §2. 概念与原理教学哲学
+## §1. Teaching philosophy
 
-概念和原理是整套教学体系的地基——地基不稳，后面的代码理解全部架空。
+**Core goal**: the student can **trace code on their own**, not just "follow what the teacher said."
 
-### §2.1 Feynman 技术
+Three criteria for whether teaching worked — can the student, independently:
 
-**核心信念**：如果你不能用最简单的语言解释一件事，说明你还没真正理解它。
+1. Open an unfamiliar module file in the target repo and locate the core logic
+2. Explain in their own words "what this code is doing and why it's written this way"
+3. Map the code's behavior to a domain concept they already know
 
-教学时的 3 条操作规则：
+**The fundamental taboo**: leaving the student with "I listened, but the code still doesn't make sense." That's a teaching failure, not a learning-ability problem.
 
-1. **不教定义，教"为什么这个问题存在"**
-   - 错误方式：`ReAct = Reasoning + Acting 的结合`
-   - 正确方式：`如果 LLM 只推理不行动，会发生什么？（幻觉）如果只行动不推理，会怎样？（盲目）ReAct 是解决这个矛盾的最小方案。`
+---
 
-2. **不接受"我觉得明白了"——用 Feynman 检验**
-   - 检验方法："用一句话，不用任何术语，告诉我这个东西解决了什么问题。"
-   - 学生说不清楚 → 找到了知识盲点 → 这里是重点突破的地方
-   - 学生说清楚了 → 带他用术语重新表达 → 概念才算真正内化
+## §2. Concept and principle teaching philosophy
 
-3. **宁慢勿快**
-   - 宁可花 2 倍时间把一个概念讲透，不要快速刷过 5 个概念
-   - 认知过载的学生会假装理解——这比"我不懂"更危险
+Concepts and principles are the foundation of the whole teaching system — if the foundation is shaky, all the code understanding on top of it floats.
 
-### §2.2 外部资料驱动
+### §2.1 Feynman technique
 
-概念和原理层不闭门造车——有时候一篇论文的一张图比 1000 字解释更有力。
+**Core belief**: if you can't explain something in the simplest possible language, you don't really understand it yet.
 
-**操作规则**：
-- 讲每个核心概念时，主动搜索"最直接回答这个 Why"的权威材料
-- 不是"关于这个主题的材料"，而是"能一句话击穿核心洞察的材料"
-- 引入材料后，立刻映射到目标 repo 的实现（不能让外部知识成为孤岛）
+Three operating rules during teaching:
 
-**示例**（以 AI Agent 领域为例）：
+1. **Don't teach the definition; teach "why this problem exists"**
+   - Wrong: `ReAct = Reasoning + Acting combined`
+   - Right: `What happens if an LLM only reasons and never acts? (Hallucination.) What happens if it only acts without reasoning? (Blind.) ReAct is the minimal solution to that tension.`
 
-| 概念 | 应引入的材料 | 核心洞察 |
+2. **Don't accept "I think I get it" — use Feynman to verify**
+   - The check: "In one sentence, no jargon, tell me what problem this thing solves."
+   - The student can't say it clearly → you've found the blind spot → that's where to focus next
+   - The student can say it clearly → bring them back to the term layer (Repack) → that's when the concept is really internalized
+
+3. **Better slow than fast**
+   - Better to take 2x as long to land one concept than rush through 5
+   - A cognitively overloaded student will fake understanding — that's more dangerous than "I don't get it"
+
+### §2.2 External-material driven
+
+The concept / principle layer isn't built in isolation — sometimes one figure from a paper does more than 1000 words of explanation.
+
+**Operating rules**:
+- For each core concept, actively search for authoritative material that "directly answers this Why"
+- Not "material related to this topic," but "material that lands the core insight in one sentence"
+- After bringing in the material, immediately map it to the target repo's implementation (no islands of external knowledge)
+
+**Example** (using the AI agent domain):
+
+| Concept | Material to bring in | Core insight |
 |------|------------|---------|
-| ReAct 为什么需要 Reason + Act 组合 | ReAct 论文（Yao 2022）实验数据 | 纯 CoT 幻觉率高 / 纯 Act 推理弱 |
-| 记忆分层为什么是三层 | Lilian Weng 认知科学框架 | 感官/工作/长期记忆的生物学类比 |
-| 为什么要用图记忆 | Mem0 + Zep 论文 | 向量检索的关系推理盲区 |
-| Tool 设计为什么要 poka-yoke | Anthropic ACI 文章 | 工具 = Agent 的认知界面，与 HCI 同等重要 |
+| Why does ReAct need Reason + Act combined | ReAct paper (Yao 2022) experimental data | Pure CoT has high hallucination / pure Act has weak reasoning |
+| Why is memory layered into three tiers | Lilian Weng's cognitive-science framework | Biological analogy: sensory / working / long-term memory |
+| Why use graph memory | Mem0 + Zep papers | Vector retrieval has a blind spot for relational reasoning |
+| Why tool design needs poka-yoke | Anthropic's ACI article | Tools = agent's cognitive interface; as important as HCI |
 
-### §2.3 语义波（Semantic Waves）
+### §2.3 Semantic waves
 
-来源：计算机教育研究（Maton 2013，Legitimation Code Theory）。
+Source: computing-education research (Maton 2013, Legitimation Code Theory).
 
-好的解释走完整的波形：
+A good explanation traces a full wave:
 
 ```
-高抽象度                    技术术语
-（低具体度）              （高复杂度）
+High abstraction              technical term
+(low concreteness)         (high complexity)
      │                          ↑
-     │   "ReAct = 推理+行动"    │ ← Repacking（打包回去）
+     │   "ReAct = reason+act"   │ ← Repacking (pack it back up)
      │                          │
-     ▼   具体例子                │
-（高具体度）              （低复杂度）
-  "就像你边查资料边写报告，
-   不是先查完所有资料再写"
+     ▼   concrete example        │
+(high concreteness)         (low complexity)
+  "It's like writing a report while
+   you're looking things up — you don't
+   wait until you've read everything"
 ```
 
-**跨领域类比**（其他领域同样适用，AI Agent 只是示例之一）：
-- Web 框架："`app.use((req,res,next)=>...)` 中间件" Unpack 为"工厂流水线上每个工位都对包裹做点什么再传给下一个"；Repack 回到"洋葱模型 / 责任链"
-- 数据库：B-tree 节点分裂 Unpack 为"书架满了，把书分到两层，加一个目录指针"；Repack 回"B-tree balance"
-- 编译器：词法分析 Unpack 为"把一句话拆成单个汉字"；Repack 回"tokenization"
+**Cross-domain analogies** (same pattern applies; AI agents are just one example):
+- Web frameworks: "`app.use((req,res,next)=>...)` middleware" unpacks to "every station on the factory line does something to the package then passes it on"; repacks to "onion model / chain of responsibility"
+- Databases: a B-tree node split unpacks to "the shelf is full, split the books across two shelves and add a pointer in the index"; repacks to "B-tree balance"
+- Compilers: lexical analysis unpacks to "splitting a sentence into individual characters"; repacks to "tokenization"
 
-**两个禁止错误**：
+**Two forbidden mistakes**:
 
-- ❌ **只下不上**（"下行电梯"）：讲了很多具体例子，从没回到技术术语 → 学生无法迁移到其他场景
-- ❌ **只上不下**（"高空停留"）：全是抽象定义和架构图，没有具体例子 → 认知过载，听不进去
+- ❌ **Down only** ("descending elevator"): lots of concrete examples, never back to terms → the student can't transfer to other situations
+- ❌ **Up only** ("stuck in the clouds"): all abstract definitions and architecture diagrams, no concrete examples → cognitive overload, nothing lands
 
-**正确做法**：每个知识点都要明确地 Unpack（把术语解包成具体例子）然后 Repack（把例子重新打包成术语）。
+**The right move**: for every concept, explicitly Unpack (turn the term into a concrete example) and then Repack (turn the example back into the term).
 
-**检验**："学生现在能用专业术语描述刚才的具体例子吗？"
+**Check**: "Can the student now describe the concrete example we just did using the technical term?"
 
 ---
 
-## §3. 三层递进结构
+## §3. Three-layer progression
 
-每个知识点必须按三层顺序讲解，绝不跳层：
+Every concept must be taught in this three-layer order. Never skip a layer:
 
 ```
-层一：为什么？（全景层）
-  - 没有这个东西会怎样？（反向论证）
-  - 在该技术领域生态中，这个问题的通用解法是什么？
-  - 目标 repo 选择了什么方案，为什么？
+Layer 1: Why? (panorama)
+  - What happens if this thing doesn't exist? (Reverse argument)
+  - In this tech domain's ecosystem, what's the standard solution?
+  - What did the target repo choose, and why?
 
-层二：是什么？（架构层）
-  - 核心概念定义（一句话）
-  - 组件关系图（文字或 ASCII / mermaid）
-  - 关键设计决策（最多 3 个，ADR 格式：Context → Decision → Consequence）
+Layer 2: What? (architecture)
+  - Core concept definition (one sentence)
+  - Component relationship diagram (text or ASCII / mermaid)
+  - Key design decisions (at most 3, ADR format: Context → Decision → Consequence)
 
-层三：怎么实现？（实现层）
-  ⓪ 先：高层级代码框架（代码地图）
-  ① 再：最简实现（骨架）
-  ② 后：目标 repo 对应代码（对照）
-  ③ 解释：工业级增强（差异）
+Layer 3: How? (implementation)
+  ⓪ First: high-level code map
+  ① Then: minimal implementation (skeleton)
+  ② Then: the target repo's matching code (comparison)
+  ③ Explain: industrial-strength enhancements (the diff)
 ```
 
-**绝不允许**：跳过层一层二直接进入层三，或在没有最简实现铺垫的情况下展示 repo 的复杂代码。
+**Never allowed**: jumping past layers 1-2 into layer 3, or showing the repo's complex code without first laying down a minimal implementation.
 
 ---
 
-## §4. 最简对照法（核心方法）
+## §4. Minimal Comparison Method (core method)
 
-这是本教学体系最重要的方法。所有 stage-3-walkthroughs/ 教案必须包含完整的最简对照法五步。
+This is the most important method in the whole teaching system. Every stage-3-walkthroughs/ lesson must contain the full five-step Minimal Comparison Method.
 
-### §4.0 Step 0：高层级代码框架（代码地图）
+### §4.0 Step 0: high-level code map
 
-先给学生一张地图，再让他们走路。
+Give the student a map before asking them to walk.
 
-- 列出这个功能涉及的核心文件（3-5 个）
-- 画出主要函数调用链（不是内部逻辑，是 A 调用 B 调用 C 的关系）
-- 说明数据从哪里进、从哪里出
-- 格式：文字路径图，每个节点带 `file.ts:line`
+- List the core files involved (3-5)
+- Draw the main function-call chain (not internal logic — A calls B calls C)
+- Say where data comes in and where it goes out
+- Format: a text path diagram, each node tagged with `file.ts:line`
 
-目的：让学生在看最简版骨架之前，先知道"真实代码分布在哪些文件、大致顺序是什么"，避免最简版概念和真实代码文件之间断层。
+Goal: before the student sees the minimal skeleton, they already know "where the real code lives, roughly in what order" — that prevents a disconnect between the minimal version's concepts and the real code files.
 
-### §4.1 Step 1：找权威最简实现（V2 升级，三级优先级）
+### §4.1 Step 1: find an authoritative minimal implementation (V2 upgrade — three-tier priority)
 
-> **重要变更（V2）**：旧方法（AI 临场写 30-100 行）已废弃。原因：AI 临场代码看着像，跑起来不一定通，跟权威实现也有差距，学生还要去验证。新方法：**所有"最简实现"必须来自现成、可运行、有社区背书的代码**，按下面三级优先级查找。
+> **Important change (V2)**: the old approach (AI writes 30-100 lines on the fly) is deprecated. Reason: AI-improvised code looks right but may not run, may not match the authoritative implementation, and forces the student to verify it. New approach: **every "minimal implementation" must come from real, runnable, community-vetted code**, found via the three-tier priority below.
 
-#### 三级优先级
+#### Three-tier priority
 
-| 优先级 | 来源 | 何时用 |
+| Priority | Source | When to use |
 |--------|------|--------|
-| 1 | **stage-0 学过的 beginner repo 代码** | 首选。学生已经跑过、看过、最熟悉。引用形式：`stage-0-fundamentals/{repo-name}/{path}:{line}` |
-| 2 | **领域权威的"简洁实现型"repo**（用户评估认可过——AI 不独断指认） | 备选。**合格类型**：作者出名的 educational repo（大牛 / 课程作者出品）、以"几百行教学代码"为目标的简洁实现 repo（如 `nano-*` / `mini-*` / `tiny-*` 命名风格）、单 notebook 形式的完整教学示例。**不合格类型**：cookbook / API SDK 文档 / production demo——这些是参考资料而非递进教学（详见 `forbidden-list.md` §5b 元教训 2）。引用形式：`{owner}/{repo}/{path}:{line}` |
-| 3 | **AI 简化版（仅当 1、2 都没有）** | 兜底。AI 基于 1、2 中的某个权威实现做注释/摘要版，**必须**标注 `"基于 X 简化，仅供讲解，未独立验证运行"`。绝不"凭空写一个"。 |
+| 1 | **The beginner repo code learned in stage-0** | Preferred. The student already ran it, read it, knows it best. Reference form: `stage-0-fundamentals/{repo-name}/{path}:{line}` |
+| 2 | **A domain-authoritative "minimal implementation" repo** (user-evaluated and confirmed — AI doesn't unilaterally pick) | Backup. **Qualifying types**: educational repos by well-known authors (big-name engineers / course authors), minimal-implementation repos that target "a few hundred lines of teaching code" (e.g., `nano-*` / `mini-*` / `tiny-*` naming), single-notebook complete teaching examples. **Disqualifying types**: cookbook / API SDK docs / production demos — those are reference materials, not progressive teaching (see `forbidden-list.md` §5b meta-lesson 2). Reference form: `{owner}/{repo}/{path}:{line}` |
+| 3 | **AI-simplified version (only when 1 and 2 both fail)** | Last resort. AI makes an annotated/summary version based on an authoritative implementation from 1 or 2 and **must** mark it `"based on X, simplified for explanation, not independently verified to run"`. Never "write one from scratch out of memory." |
 
-#### 选材标准（用于优先级 1 和 2）
+#### Selection criteria (used for priorities 1 and 2)
 
-- ✅ **第一性原理**：直接调用底层 API（任何底层 provider）+ 标准库；该领域的**核心控制流骨架可见**（具体骨架元素按领域不同——AI Agent 是 `messages.append + tool_use 分发`，Web 框架是 `next() 链`，数据库是 `cursor + opcode loop`，详见 `multi-domain-examples.md` §1）
-- ✅ **配套教学内容**：完整 README / 配套博文 / 视频 / Issue 解答
-- ✅ **权威背书**：Star ≥ 1k 或大厂 / 大牛 / 知名课程出品
-- ✅ **维护活跃**：最近 6 个月有提交
-- ❌ **掩盖核心控制流骨架的成熟框架抽象**——把该领域的核心逻辑封装成几行 API 的框架（不同领域有不同的"封装犯罪嫌疑人"——AI Agent 领域是 langchain 系，Web 领域是 NestJS / Spring，数据库领域是 sqlalchemy / typeorm 等。详见 `forbidden-list.md` §5 的判断方法 + 按领域分类的已知不合格框架列表）
-- ❌ 只是文章合集没有可运行代码
+- ✅ **First principles**: directly calls a low-level API (any underlying provider) + standard library; the **core control flow of the domain is visible** (skeleton elements vary by domain — for AI agents it's `messages.append + tool_use dispatch`, for web frameworks it's `next() chain`, for databases it's `cursor + opcode loop` — see `multi-domain-examples.md` §1)
+- ✅ **Companion teaching content**: complete README / companion blog post / video / issue Q&A
+- ✅ **Authoritative backing**: Star ≥ 1k or big company / known engineer / known course
+- ✅ **Actively maintained**: commits in the last 6 months
+- ❌ **Mature-framework abstractions that hide the core control flow** — frameworks that wrap the domain's core logic into a few API calls (different domains have different "wrapper-crime suspects" — for AI agents it's the langchain family, for web it's NestJS / Spring, for databases it's sqlalchemy / typeorm, etc. See `forbidden-list.md` §5 for the judgment method + the per-domain disqualifying-framework list)
+- ❌ Just an article collection without runnable code
 
-详见 `forbidden-list.md` §5。
+Details: `forbidden-list.md` §5.
 
-#### 写法标准
+#### Writing standard
 
-引用源代码时，**展示原始代码** + 一段 5-10 行的**伪代码摘要**：
+When referencing source code, **show the original code** plus a **5-10 line pseudocode summary**:
 
-```markdown
-**最简实现来源**（**实际推荐 repo 由 Phase 2C 网络搜索 + 用户评估确认**，下面是 OpenClaw 教学场景的真实示例）：
+````markdown
+**Minimal implementation source** (**the actual recommended repo comes from Phase 2C web search + user evaluation**; below is a real example from OpenClaw teaching):
   Leonie Monigatti notebook (Anthropic API, 4-component progression)
-**文件位置**：`iamleonie/website/blob/main/blog/ai-agent-from-scratch-in-python.ipynb` Section 4
-**为什么是权威最简实现**：作者 ML engineer 背景；4 组件清晰递进（LLM/memory/tool/agent loop）；
-  全程无框架（直接调 anthropic SDK）；与多数现代 AI Agent repo 同 API 体系。
+**File location**: `iamleonie/website/blob/main/blog/ai-agent-from-scratch-in-python.ipynb` Section 4
+**Why this is the authoritative minimal implementation**: author has an ML engineer background;
+  4-component clean progression (LLM / memory / tool / agent loop);
+  no framework end-to-end (calls anthropic SDK directly); same API family as most modern AI agent repos.
 
 ---
 
-**5-10 行伪代码摘要**（仅辅助理解骨架，跑代码请回到上面的真实文件）：
+**5-10 line pseudocode summary** (only an aid for understanding the skeleton — to run the code, go back to the real file above):
 
 ```python
-# 改编自 Leonie notebook Section 4，剥离 error handling/streaming，保留 ReAct 三元组骨架
+# Adapted from Leonie's notebook Section 4. Strips error handling / streaming, keeps the ReAct triplet skeleton.
 def act():
-    """ReAct 循环核心：直到 LLM 不再生成 tool_use"""
+    """ReAct loop core: until the LLM stops producing tool_use"""
     response = call_llm(messages, tools)
     if response.stop_reason == "tool_use":
         result = execute_tool(...)
         messages.append(result)
-        return act()  # 递归
-    return response.text  # 完成
+        return act()  # recurse
+    return response.text  # done
 ```
 
-> **跨领域类比**：上面是 AI Agent 领域的"最简骨架"示例。其他领域同样有"几行代码看清核心控制流"的最简版：
-> - Web 框架：3-5 行就能看清 `middleware → next() → handler` 链
-> - 数据库：5-10 行 cursor 操作就能看清 Btree 遍历
-> - 编译器：10 行 tokenize + AST 构造就能看清解析骨架
-> - OS 内核：trap 入口 + 调度队列也能用 20 行伪代码表达
+> **Cross-domain analogy**: the above is an AI-agent example of "minimal skeleton." Other domains have the same "a few lines reveal the core control flow":
+> - Web frameworks: 3-5 lines is enough to see `middleware → next() → handler`
+> - Databases: 5-10 lines of cursor operations show B-tree traversal
+> - Compilers: 10 lines of tokenize + AST construction reveal the parsing skeleton
+> - OS kernels: trap entry + scheduler queue can be expressed in 20 lines of pseudocode
 >
-> 详见 `multi-domain-examples.md` §1 "关键骨架元素" 列——每个领域都有"几行代码看到本质"的可能。
+> See `multi-domain-examples.md` §1 "skeleton elements" column — every domain has a "few lines that show the essence" version.
+````
+
+**Why this design**:
+- The student **first sees real, runnable code** (authoritative repo's file:line)
+- The 5-10 lines the AI writes are just a "translation" into a more compact form, to help the teacher walk through the skeleton — explicitly labeled "this is a summary, not a runnable version"
+- If the student wants to run it, modify it, verify it — go back to the real repo
+
+#### Anti-examples: things forbidden in v2
+
+```
+❌ Drop 80 lines of AI-improvised Python into walkthrough §4.1 with no "source"
+   Consequence: doesn't run / diverges from the authoritative implementation / student doesn't know where to verify
+
+❌ Reference a repo without a precise file:line, just "similar to X's implementation"
+   Consequence: the student can't find it
+
+❌ Reference a langchain-based beginner repo
+   Consequence: what the student learns is framework APIs, not the underlying skeleton
 ```
 
-**为什么这样设计**：
-- 学生**先看到真实可跑的代码**（权威 repo 的 file:line）
-- AI 写的 5-10 行只是"翻译"成更紧凑的形式，方便老师讲骨架——明确标注"这是摘要不是运行版"
-- 学生想跑、想改、想验证——回到真实 repo
+### §4.2 Step 2: show the target repo's matching code (file:line + comments)
 
-#### 反例：哪些是 v2 禁止的
-
-```
-❌ 在 walkthrough §4.1 直接贴 80 行 AI 临场写的 Python，没有 "来源"
-   后果：跑不通 / 跟权威实现有差距 / 学生不知道去哪验证
-
-❌ 引用了某个 repo 但不给精确 file:line，只说 "类似于 X 的实现"
-   后果：学生找不到对应位置
-
-❌ 引用了基于 langchain 的 beginner repo
-   后果：学生学到的是框架 API，不是骨架原理
-```
-
-### §4.2 Step 2：展示目标 repo 对应代码（file:line + 注释）
-
-- 给出 `file.ts:line` 的精确引用
-- 用注释标注"对应权威最简版的哪一行/哪个函数"
+- Give the precise `file.ts:line` reference
+- Annotate "which line / which function of the authoritative minimal version this corresponds to"
 
 ```typescript
-// 以 OpenClaw 为例（最简实现来源：{stage-0 推荐 repo}/path/to/react-loop.py:42-78
-//  —— 推荐 repo 由 Phase 2C 网络搜索 + 用户评估确认后填入，AI 不独断指认）：
+// OpenClaw example (minimal-implementation source: {stage-0 recommended repo}/path/to/react-loop.py:42-78
+//  — the recommended repo is filled in after Phase 2C web search + user evaluation, AI doesn't unilaterally pick):
 
 // attempt.ts:991
-// 对应权威最简版的：messages = []（{stage-0}/react-loop.py:15）
+// Corresponds to authoritative minimal version's: messages = [] ({stage-0}/react-loop.py:15)
 sessionManager = guardSessionManager(SessionManager.open(params.sessionFile), { ... });
 
 // attempt.ts:1627
-// 对应权威最简版的：act() 递归调用入口（{stage-0}/react-loop.py:60）
+// Corresponds to authoritative minimal version's: act() recursive entry ({stage-0}/react-loop.py:60)
 await abortable(activeSession.prompt(effectivePrompt));
 ```
 
-> **方法论铁律（V2 补充）**：AI 不能凭印象指认某个 repo 是"合格的权威最简实现"。必须 Phase 2C 真实搜索、用 WebFetch 验证 README 没有 `from langchain import ...` 等框架引入、把 3-5 个候选给用户评估、用户确认后才能写入 §4.1 / §4.2 的引用。详见 `forbidden-list.md` §5。
+> **Methodology iron-rule (V2 addition)**: the AI must not declare a repo "qualified as an authoritative minimal implementation" from memory. It must run a real Phase 2C search, use WebFetch to verify the README has no `from langchain import ...` or similar framework imports, hand 3-5 candidates to the user for evaluation, and only after user confirmation write the reference into §4.1 / §4.2. See `forbidden-list.md` §5.
 
-### §4.3 Step 3：写三列对照表
+### §4.3 Step 3: write a three-column comparison table
 
-始终使用三列：最简版本 / repo 代码位置 / 说明
+Always three columns: minimal version / repo code location / explanation
 
-**示例（以 AI Agent 领域 / OpenClaw 为目标 repo）**：
+**Example (AI agent domain / OpenClaw as target repo)**:
 
 ```markdown
-| 最简版本 | repo 代码位置 | 说明 |
+| Minimal version | Repo code location | Explanation |
 |---------|-------------|------|
-| `messages = []` | `SessionManager.open(jsonl)` in `attempt.ts:991` | 内存列表 → 磁盘持久化 |
-| `call_llm()` | `activeSession.prompt()` in `attempt.ts:1627` | 直接调用 → 封装在 pi-agent-core |
-| `execute_tool()` | `tool.execute()` via pi-agent-core | 简单分发 → 类型检查 + 权限 + 超时 |
+| `messages = []` | `SessionManager.open(jsonl)` in `attempt.ts:991` | In-memory list → disk persistence |
+| `call_llm()` | `activeSession.prompt()` in `attempt.ts:1627` | Direct call → wrapped in pi-agent-core |
+| `execute_tool()` | `tool.execute()` via pi-agent-core | Simple dispatch → type check + permissions + timeout |
 ```
 
-**跨领域示例**（其他领域同样套用三列对照表）：
+**Cross-domain example** (the three-column table works the same for other domains):
 
-| 领域 | 最简版本（示例） | 目标 repo 代码位置（示例） | 说明 |
+| Domain | Minimal version (example) | Target repo code location (example) | Explanation |
 |------|------|----------|------|
-| Web 框架 | `function handler(req, res) { res.send('hi') }` | `app.use('/x', fn)` in `application.js:280` | 直接处理 → 中间件链 + 路由匹配 |
-| 数据库 | `for row in table: yield row` | `BtreeNext()` in `btree.c:7234` | 内存遍历 → 磁盘页 IO + cursor 状态机 |
-| 编译器 | `tokens = src.split(' ')` | `Scanner::Scan()` in `scanner.cc:412` | 简单分词 → 字符类查询 + 状态机 |
-| OS 内核 | `def schedule(): next_proc.run()` | `swtch(&old.ctx, &new.ctx)` in `swtch.S:8` | 函数调用 → 上下文寄存器切换 |
+| Web frameworks | `function handler(req, res) { res.send('hi') }` | `app.use('/x', fn)` in `application.js:280` | Direct handling → middleware chain + route matching |
+| Databases | `for row in table: yield row` | `BtreeNext()` in `btree.c:7234` | In-memory traversal → disk page IO + cursor state machine |
+| Compilers | `tokens = src.split(' ')` | `Scanner::Scan()` in `scanner.cc:412` | Naive split → character-class lookup + state machine |
+| OS kernels | `def schedule(): next_proc.run()` | `swtch(&old.ctx, &new.ctx)` in `swtch.S:8` | Function call → register context switch |
 
-### §4.4 Step 4：写"工业级增强"解释
+### §4.4 Step 4: write the "industrial-strength enhancements" explanation
 
-使用"差异对比"的文本图，不用 Markdown 表格（因为内容太长不好排版）：
+Use a "diff text diagram," not a Markdown table (because the content is too long to lay out well):
 
 ```
-最简版本 (N 行)              repo 增强 (M 行)
+Minimal version (N lines)     Repo enhancements (M lines)
 ─────────────────              ──────────────────────────
-xxx = yyy             →    工业级功能1 + 工业级功能2
-aaa()                 →    更复杂的实现
-                            + 额外考虑的场景
+xxx = yyy             →    industrial feature 1 + industrial feature 2
+aaa()                 →    more complex implementation
+                            + extra cases considered
 ─────────────────              ──────────────────────────
-核心原则：多出来的不是"更多概念"，是"把同样的事做得更健壮"
+Core principle: the extra lines aren't "more concepts" — they're "doing the same thing more robustly"
 ```
 
-**核心信念**：
+**Core belief**:
 
-> "更多的代码行数 = 把同样的事做得更健壮、更安全、更灵活。
-> 不是更多的新概念。
-> 理解了 80 行的骨架，你就理解了 1600 行的意图。"
+> "More lines of code = doing the same thing more robustly, safely, flexibly.
+> Not more new concepts.
+> Once you understand the 80-line skeleton, you understand the intent of the 1600-line version."
 
-每次面对复杂代码时都要先讲这句话。
+Say this every time you're about to face complex code.
 
 ---
 
-## §5. 代码导航法
+## §5. Code navigation
 
-告诉学生"从哪里开始读代码"比"解释代码在干什么"更重要。
+Telling the student "where to start reading the code" matters more than "explaining what the code does."
 
-### §5.1 标准代码导航格式
+### §5.1 Standard code-navigation format
 
 ```
-第 1 轮（30 分钟）：[具体目标，如"追踪一条消息"]
-1. 打开 src/xxx/yyy.ts，搜索 functionName（约 N 行附近）
-2. 关注这几行（给出行号范围）
-3. 这里做了什么？（一句话）
+Round 1 (30 min): [specific goal, e.g., "trace one message"]
+1. Open src/xxx/yyy.ts, search for functionName (around line N)
+2. Focus on these lines (give a line range)
+3. What's happening here? (one sentence)
 
-第 2 轮（30 分钟）：[具体目标，如"理解 ReAct 循环"]
+Round 2 (30 min): [specific goal, e.g., "understand the ReAct loop"]
 ...
 ```
 
-### §5.2 "永远从一条消息的路径开始"原则
+### §5.2 "Always start from one request's path"
 
-**永远从"一条消息的路径"开始**，不从 `entry.ts` 或 `index.ts` 开始——那里是噪音最多的地方。
+**Always start from "one request's path"**, not from `entry.ts` or `index.ts` — that's where the noise is.
 
-为什么：
-- `entry.ts/index.ts` 是初始化代码，跟"这个 repo 在做什么"无关
-- 学生从一条真实消息的入口跟下去，才能感受到"这个系统在干嘛"
-- 数据流是有方向的，跟着数据走 = 跟着真实业务走
+Why:
+- `entry.ts / index.ts` is initialization code; it has nothing to do with "what this repo does"
+- The student follows a real request from its entry point — that's how they feel "what the system is doing"
+- Data flow has direction; following the data = following the real business logic
 
-### §5.3 代码路径图格式
+### §5.3 Code path diagram format
 
 ```
-用户发消息
+User sends a message
     │
     ▼
-src/foo/bar.ts:730      ← 说明入口的职责（一句话）
-    │ (调用)
+src/foo/bar.ts:730      ← what the entry does (one sentence)
+    │ (calls)
     ▼
-src/baz/qux.ts:235      ← 说明下一跳的职责
+src/baz/qux.ts:235      ← what the next hop does
     │
-    └── 关注这里的几行：
-        - line 991: acquireSessionWriteLock()  ← 为什么？防止并发写
-        - line 1068: createAgentSession()      ← 对应最简版的哪一步
-        - line 1627: activeSession.prompt()    ← 这是关键！
+    └── Focus on these lines here:
+        - line 991: acquireSessionWriteLock()  ← why? prevent concurrent writes
+        - line 1068: createAgentSession()      ← which step of the minimal version this maps to
+        - line 1627: activeSession.prompt()    ← this is the key one!
 ```
 
-### §5.4 file:line 引用规范
+### §5.4 file:line reference spec
 
-正文中引用代码位置，始终用 `文件名:行号` 或 Markdown 链接格式：
+When referring to a code location in prose, always use `filename:line` or Markdown link form:
 
 ```
-正文引用：`attempt.ts:1627` 或 [attempt.ts:1627](src/agents/pi-embedded-runner/run/attempt.ts#L1627)
-代码块注释：// attempt.ts:1627
-路径图中：src/agents/pi-embedded-runner/run/attempt.ts:1627
+Inline: `attempt.ts:1627` or [attempt.ts:1627](src/agents/pi-embedded-runner/run/attempt.ts#L1627)
+Code block comment: // attempt.ts:1627
+Path diagram: src/agents/pi-embedded-runner/run/attempt.ts:1627
 ```
 
 ---
 
-## §6. 教学节奏（单次教学 45-60 分钟）
+## §6. Lesson pacing (one 45-60 min lesson)
 
 ```
-0-5 分钟：全景问题
-  "想象没有 X，会发生什么？"
-  → 让学生感受到这个模块存在的必要性
+0-5 min: panoramic question
+  "Imagine X doesn't exist. What happens?"
+  → make the student feel why this module needs to exist
 
-5-20 分钟：概念和架构（层一+层二）
-  - 一张 ASCII / mermaid 架构图
-  - 2-3 个核心概念，每个一句话定义 + 具体例子（语义波 Unpack）
-  - 1-2 个关键设计决策（ADR 格式）
-  - 引入外部高质量材料（论文/权威博客的核心洞察）
+5-20 min: concepts and architecture (Layer 1 + 2)
+  - One ASCII / mermaid architecture diagram
+  - 2-3 core concepts, each: one-sentence definition + concrete example (semantic-wave Unpack)
+  - 1-2 key design decisions (ADR format)
+  - Bring in external high-quality material (core insight from a paper / authoritative blog)
 
-  ★ 检查点 A：概念理解检查（进入代码之前！）
-    "用一句话，不用任何术语，告诉我这个[概念]解决了什么问题？"
-    - 学生说清楚了 → 带他用术语重新表达（语义波 Repack）→ 继续
-    - 学生说不清楚 → 找到盲点 → 补充例子/外部材料直到说清楚
-    - 严禁跳过此检查点直接进入代码
+  ★ Checkpoint A: concept understanding check (BEFORE going to code!)
+    "In one sentence, no jargon, tell me what problem this [concept] solves."
+    - Student says it clearly → bring them back to the term layer (semantic-wave Repack) → continue
+    - Student can't say it → found the blind spot → add examples / external materials until they can
+    - Strictly no skipping this checkpoint to go straight to code
 
-20-40 分钟：最简对照（层三）
-  - Step 0：高层级代码框架（file:line 路径图，3-5 个核心文件）
+20-40 min: minimal comparison (Layer 3)
+  - Step 0: high-level code map (file:line path diagram, 3-5 core files)
 
-  ★ 检查点 B：代码框架检查
-    "打开 [file]，你能找到这个请求从哪里进来的吗？"
-    - 找到了 → 继续展示最简实现
-    - 找不到 → 重新梳理文件关系，给更多路径提示
+  ★ Checkpoint B: code-skeleton check
+    "Open [file]. Can you find where the request comes in?"
+    - Found it → continue, show the minimal implementation
+    - Can't find it → rebuild the file relationships, give more path hints
 
-  - Step 1：展示最简实现（代码 + 解释）
-  - Step 2-4：展示 repo 对应（file:line + 对照表 + 工业级增强）
+  - Step 1: show the minimal implementation (code + explanation)
+  - Steps 2-4: show the repo's matching code (file:line + comparison table + industrial-strength enhancements)
 
-40-50 分钟：代码导航
-  - 给出读代码的具体步骤（分轮次）
-  - 每个关键文件的 file:line 引用
+40-50 min: code navigation
+  - Concrete steps to read the code (in rounds)
+  - file:line reference for each key file
 
-50-60 分钟：检验
-  - 3 个标准问题（参见 exercises-template.md）
-  - 让学生口头回答，找出没理解的点
+50-60 min: test
+  - 3 standard questions (see exercises-template.md)
+  - Have the student answer out loud; find the points they didn't get
 ```
 
-详细的场景模板（学生卡住怎么办、单文件精读怎么教）见 `checkpoints-and-scenarios.md`。
+For detailed scenario templates (what to do when the student is stuck, how to teach a deep-read of one file), see `checkpoints-and-scenarios.md`.
 
 ---
 
-## §7. 检验问题的核心要求
+## §7. Core requirement for test questions
 
-每个模块结束后的检验问题必须是**可以用代码验证**的问题，不能是纯概念题。
+After each module, the test questions must be **code-verifiable** — not pure concept questions.
 
 ```
-✅ 好的检验问题：
-- "打开 attempt.ts，找到启动 ReAct 循环的那一行，它叫什么？"
-- "最简版的 messages = [] 对应 repo 的哪个函数调用？"
-- "为什么 JSONL 比 JSON 更适合 session 存储？用一个场景说明。"
+✅ Good test questions:
+- "Open attempt.ts, find the line that starts the ReAct loop. What's it called?"
+- "The minimal version's `messages = []` corresponds to which function call in the repo?"
+- "Why is JSONL better than JSON for session storage? Give one scenario."
 
-❌ 差的检验问题：
-- "你理解 ReAct 了吗？"（太主观）
-- "解释 pi-agent-core 的作用。"（太宽泛）
+❌ Bad test questions:
+- "Do you understand ReAct?" (too subjective)
+- "Explain the role of pi-agent-core." (too broad)
 ```
 
-详见 `exercises-template.md`。
+See `exercises-template.md`.
 
 ---
 
-## §8. 这套方法论的适用范围与不可妥协性
+## §8. The methodology's scope and what can't be compromised
 
-**适用范围**：所有 stage-3-walkthroughs/ 教学、stage-1-foundations/ 和 stage-2-architecture/ 的内容生成、stage-4-applied/ 的迁移讨论。
+**Scope**: all stage-3-walkthroughs/ teaching, content generation for stage-1-foundations/ and stage-2-architecture/, migration discussions in stage-4-applied/.
 
-**不可妥协**：方法论本身（最简对照法五步、检查点 A/B、Feynman 检验、语义波 Unpack/Repack、三层递进、file:line 引用规范）不可被"用户偏好"覆盖。
+**Non-negotiable**: the methodology itself (the five steps of the Minimal Comparison Method, Checkpoint A/B, Feynman check, semantic-wave Unpack/Repack, three-layer progression, file:line spec) cannot be overridden by "user preference."
 
-可被用户偏好覆盖的是：
-- 语言（中/英/双语）
-- 类比的多少
-- 单次教学的时长（45 vs 60 分钟）
-- 是否需要在每节课开头复习上节课
+What user preference CAN override:
+- Language (English / Chinese / bilingual)
+- How many analogies
+- Lesson length (45 vs 60 min)
+- Whether to recap last lesson at the start of each one
 
-但**不可覆盖**：
-- "进代码前先做概念 Feynman 检验"
-- "展示 repo 代码前先展示最简实现"
-- "代码引用必须带 file:line"
-- "禁止从 entry.ts/index.ts 开教"
+But **cannot override**:
+- "Concept Feynman check before going to code"
+- "Show the minimal implementation before showing the repo code"
+- "Code references must include file:line"
+- "Don't start the lesson from entry.ts / index.ts"

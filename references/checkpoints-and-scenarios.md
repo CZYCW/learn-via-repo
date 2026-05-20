@@ -1,465 +1,466 @@
-# 检查点 A/B 与教学场景模板
+# Checkpoint A/B and Teaching Scenario Templates
 
-> 教学过程中的实时操作手册。`methodology.md` 定义"应该怎么教"，本文档定义"具体场景下怎么操作"。
-
----
-
-## 目录（Table of Contents）
-
-- **§1. 检查点 A：概念理解检查** —— 进代码前必过，"用一句话不用术语解释"
-- **§2. 检查点 B：代码框架检查** —— 进最简实现前必过，独立 grep 找到 file:line
-- **§3. 场景 A-C：标准教学模板**
-  - §3.1 场景 A：教新模块（学生第一次接触）—— 标准 6 阶段节奏
-  - §3.2 场景 B：解答疑问（学生有具体问题）—— 4 步流程
-  - §3.3 场景 C：代码走读（学生打开代码跟着看）—— 4 步流程
-- **§4. 场景 D：脱困策略（学生卡住时）**
-  - §4.1 检查点 A 失败时 —— 反向论证 / 换例子 / 找前置概念 / 退回设计文档
-  - §4.2 检查点 B 失败时 —— 演示导航 / 给精确关键词 / 手把手 / 简化目标
-- **§5. 场景 E：60 分钟单文件精读模板** —— 建预期 / 按功能区块讲 / 工业级增强 / 验证
-- **§5b. 场景 F：stage-0 动手过程的伴学节奏** —— V2 新增，多次伴学 + graduation-check 把关（跨领域版）
-- **§6. 通用收尾：每次教学结束的标准动作** —— 更新 progress.md / 预告下次 / 记录挂起问题
+> The real-time playbook during teaching. `methodology.md` defines "how it should be taught"; this doc defines "how to operate in a specific situation."
 
 ---
 
-## §1. 检查点 A：概念理解检查
+## Table of Contents
 
-### 触发位置
+- **§1. Checkpoint A: concept understanding check** — must pass before going to code; "explain in one sentence, no jargon"
+- **§2. Checkpoint B: code skeleton check** — must pass before showing the minimal implementation; the student grep's to a file:line independently
+- **§3. Scenarios A-C: standard teaching templates**
+  - §3.1 Scenario A: teaching a new module (student's first contact) — standard 6-stage rhythm
+  - §3.2 Scenario B: answering questions (student has a specific question) — 4-step flow
+  - §3.3 Scenario C: code walkthrough (student opens code and follows along) — 4-step flow
+- **§4. Scenario D: unblocking strategies (student is stuck)**
+  - §4.1 When Checkpoint A fails — reverse argument / switch example / find prerequisite concept / fall back to design docs
+  - §4.2 When Checkpoint B fails — demo navigation / give precise keyword / hand-hold then independent / simplify the target
+- **§5. Scenario E: 60-minute single-file deep read template** — set expectations / teach by functional block / industrial enhancements / verify
+- **§5b. Scenario F: companion pacing during stage-0 hands-on** — added in V2, multi-session companion + graduation-check gate (cross-domain version)
+- **§6. Common closing: standard actions at the end of every lesson** — update progress.md / preview next / log open questions
 
-教学节奏中的 **5-20 分钟段结束、进入代码层（20 分钟后）之前**。
+---
+
+## §1. Checkpoint A: concept understanding check
+
+### When it fires
+
+In the lesson rhythm, **at the end of the 5-20 minute segment, before entering the code layer (after the 20-minute mark)**.
 
 ```
-0-5    全景问题
-5-20   讲概念和架构（层一+层二）
+0-5    Panoramic question
+5-20   Teach concepts and architecture (Layer 1 + 2)
         ↓
-        ★ 检查点 A（强制）
+        ★ Checkpoint A (mandatory)
         ↓
-20-40  最简对照法（层三）
+20-40  Minimal Comparison Method (Layer 3)
 ```
 
-### 标准操作
+### Standard operation
 
-老师问：
-> "用一句话，**不用任何术语**，告诉我这个 {核心概念} 解决了什么问题？"
+Teacher asks:
+> "In one sentence, **without any jargon**, tell me what problem this {core concept} solves."
 
-学生回答后，按结果分支：
+Branch based on the student's answer:
 
-**结果 A：说清楚了**
-- 立刻做 Repack："好，现在用 {术语 1}、{术语 2}、{术语 3} 重新表达一次"
-- 学生能 Repack → 通过，进入下一节
-- 学生不能 Repack → 概念还没完全内化，再举一个例子，引导 Repack
+**Result A: said it clearly**
+- Immediately Repack: "Good — now say it again using {term 1}, {term 2}, {term 3}"
+- Student can Repack → pass, move to the next section
+- Student can't Repack → concept not fully internalized; give another example, guide the Repack
 
-**结果 B：说不清楚（或回答中混用了术语）**
-- **绝不能跳过**进入代码——否则后面所有代码都是空中楼阁
-- 触发"场景 D-A：概念理解失败的脱困策略"（见 §4）
+**Result B: didn't say it clearly (or mixed jargon into the answer)**
+- **Absolutely don't skip** ahead to the code — every line of code after would be floating
+- Trigger "Scenario D-A: unblocking strategy when concept understanding fails" (see §4)
 
-### 通过标准（细化）
+### Pass criteria (refined)
 
-- 一句话 ≤ 25 字
-- 不包含任何术语（包括缩写如 ReAct/RAG/LLM）
-- 必须描述"痛点 + 解法"两个要素
-- 不能是"X 是用来做 Y 的"这种重言式
+- One sentence ≤ 25 words
+- No jargon (including acronyms like ReAct / RAG / LLM)
+- Must describe both "pain point + solution"
+- Not a tautology like "X is for doing Y"
 
 ---
 
-## §2. 检查点 B：代码框架检查
+## §2. Checkpoint B: code skeleton check
 
-### 触发位置
+### When it fires
 
-教学节奏中的 **代码地图（Step 0）讲完后、最简实现（Step 1）展示之前**。
+In the lesson rhythm, **after the code map (Step 0) is done, before showing the minimal implementation (Step 1)**.
 
 ```
-20-40  最简对照法
-   §4.0 高层级代码框架（代码地图）
+20-40  Minimal Comparison Method
+   §4.0 High-level code map
         ↓
-        ★ 检查点 B（强制）
+        ★ Checkpoint B (mandatory)
         ↓
-   §4.1 最简实现
-   §4.2 repo 对应代码
-   §4.3 对照表
-   §4.4 工业级增强
+   §4.1 Minimal implementation
+   §4.2 Repo's matching code
+   §4.3 Comparison table
+   §4.4 Industrial enhancements
 ```
 
-### 标准操作
+### Standard operation
 
-老师说：
-> "打开 `{file}`，搜索 `{key_function}`，你能找到吗？告诉我它在第几行附近。"
+Teacher says:
+> "Open `{file}`, search for `{key_function}` — can you find it? Tell me roughly which line it's around."
 
-学生在编辑器/CLI 里实际操作。按结果分支：
+The student actually does it in their editor / CLI. Branch based on result:
 
-**结果 A：找到了**
-- 让学生用一句话说"这个函数大概在做什么"（看签名 + 周围 1-2 行）
-- 通过，进入最简实现展示
+**Result A: found it**
+- Have them say in one sentence "roughly what this function is doing" (looking at the signature + 1-2 lines around it)
+- Pass, move to the minimal implementation
 
-**结果 B：找不到，或找错了**
-- 触发"场景 D-B：代码框架失败的脱困策略"（见 §4）
+**Result B: can't find it, or found the wrong place**
+- Trigger "Scenario D-B: unblocking strategy when code skeleton check fails" (see §4)
 
-### 通过标准（细化）
+### Pass criteria (refined)
 
-- 能独立打开文件
-- 能用 grep / IDE 搜索找到目标行
-- 能给出精确行号（误差 ±5 行内）
-- 不依赖老师"我帮你找"
+- Can open the file independently
+- Can use grep / IDE search to find the target line
+- Can give the exact line number (within ±5 lines)
+- Doesn't rely on the teacher saying "let me find it for you"
 
 ---
 
-## §3. 场景 A-C：标准教学模板
+## §3. Scenarios A-C: standard teaching templates
 
-### §3.1 场景 A：教新模块（学生第一次接触）
+### §3.1 Scenario A: teaching a new module (student's first contact)
 
-适用：每开一篇 walkthrough 时。
-
-```
-0-3 分钟：问题场景
-  → "假设没有 {这个模块}，开发者要手动做什么？"
-  → 让学生感受痛点
-
-3-13 分钟：最简版本
-  → 展示 20-50 行最简实现
-  → 一行一行解释骨架（不是工业代码！）
-  → 用 §0 的外部材料 Repack：这个最简版本对应该领域的 {核心概念}
-
-  ★ 检查点 A（5 分钟）
-
-13-23 分钟：repo 的实现
-  → 三列对照表（最简版 / repo 代码位置 / 说明）
-  → 用注释标"对应最简版的哪一行"
-  → file:line 全部精确
-
-  ★ 检查点 B（5 分钟）
-
-23-28 分钟：工业级增强
-  → 差异图：repo 比最简多 N 行，多在哪
-  → 每条多出的都说明"为什么工业级需要"
-  → 强调："不是更多概念，是更健壮"
-
-28-38 分钟：代码导航
-  → 分轮次，每轮一个具体目标 + file:line
-  → 学生跟着打开实际代码
-
-38-43 分钟：检验
-  → 做 exercises/code-finding.md#{topic} 的 3 题
-  → 错 1 题不影响，错 2-3 题回到对应区块重讲
-```
-
-### §3.2 场景 B：解答疑问（学生有具体问题）
-
-适用：学生在自学 stage-1/2 或独立读代码时遇到具体问题。
+Use case: every time you open a new walkthrough.
 
 ```
-1. 确认问题边界（1 分钟）
-   → "你卡在哪一层？概念？架构？还是具体代码？"
-   → 概念问题 → 走概念层（不要急着贴代码）
-   → 架构问题 → 走架构图 + ADR
-   → 代码问题 → 直接给 file:line
+0-3 min: Problem scenario
+  → "If {this module} didn't exist, what would the developer have to do by hand?"
+  → Make the student feel the pain
 
-2. 先用最简版本解释（3 分钟）
-   → 把疑问点简化到最小例子
-   → 不要直接拿 repo 的复杂版回答
+3-13 min: Minimal version
+  → Show 20-50 lines of minimal implementation
+  → Explain the skeleton line by line (not industrial code!)
+  → Repack using §0's external material: this minimal version corresponds to the domain's {core concept}
 
-3. 再映射到 repo（3 分钟）
-   → 给出 file:line，指向疑问对应的代码
-   → 解释"工业级在这里多做了什么"
+  ★ Checkpoint A (5 min)
 
-4. 验证理解（2 分钟）
-   → "现在你能独立找到 {具体功能} 在 repo 里的哪里吗？"
-   → 学生独立打开找到 = 解答完成
+13-23 min: The repo's implementation
+  → Three-column comparison table (minimal / repo location / explanation)
+  → Use comments to mark "this corresponds to which line of the minimal version"
+  → Every file:line is precise
+
+  ★ Checkpoint B (5 min)
+
+23-28 min: Industrial enhancements
+  → Diff diagram: repo has N more lines than minimal; where do they go?
+  → For each extra line, explain "why industrial scale needs it"
+  → Emphasize: "Not more concepts — more robust."
+
+28-38 min: Code navigation
+  → In rounds; each round one specific goal + file:line
+  → Student opens the actual code and follows
+
+38-43 min: Test
+  → Do 3 questions from exercises/code-finding.md#{topic}
+  → Getting 1 wrong is fine; 2-3 wrong → go back to the relevant section and re-teach
 ```
 
-### §3.3 场景 C：代码走读（学生打开代码，跟着看）
+### §3.2 Scenario B: answering questions (student has a specific question)
 
-适用：学生已读完 stage-2 对应模块的设计文档，现在跟着老师精读 stage-3 walkthrough 的代码部分。
+Use case: the student is self-studying stage-1/2 or reading code independently, and hits a specific question.
 
 ```
-1. 先建立预期（2 分钟）
-   → "这个函数/文件的核心职责是 X，对应最简版的 Y"
-   → "今天我们只看 N 行里最关键的 M 行（不是全部 N 行）"
-   → "读完之后，你应该能说出：这个文件做了哪 3 件事"
+1. Pin down the boundary of the question (1 min)
+   → "Where are you stuck? Concept? Architecture? Or specific code?"
+   → Concept question → go to the concept layer (don't paste code yet)
+   → Architecture question → architecture diagram + ADR
+   → Code question → give file:line directly
 
-2. 按功能区块讲（每块 5-15 行）
-   → 不逐行讲！按"这一块做什么"分段
-   → 每段开头问："这一块在做什么？给你 1 分钟想"
-   → 学生猜了之后，老师补 1-2 个关键行的解释，其余略过
-   → 每段结尾问："这对应最简版的哪一步？"——让学生说
+2. Explain with the minimal version first (3 min)
+   → Reduce the question to the smallest example
+   → Don't reach for the repo's complex version straight away
 
-3. 高亮关键行
-   → "第 N 行是关键，它对应最简版的 Z"
-   → 关键行 ≤5 个/文件
+3. Then map to the repo (3 min)
+   → Give file:line, point at the code that answers the question
+   → Explain "what industrial scale adds here"
 
-4. 解释工业级细节
-   → "这里多了 error handling / timeout / lock，因为..."
-   → 每条多出的都有"为什么"，没有就不讲
+4. Verify understanding (2 min)
+   → "Now can you find where {specific feature} lives in the repo by yourself?"
+   → Student opens it and finds it independently = question answered
+```
+
+### §3.3 Scenario C: code walkthrough (student opens code, follows along)
+
+Use case: the student has read the stage-2 design doc for the module and is now following the teacher through the code section of the stage-3 walkthrough.
+
+```
+1. Set expectations first (2 min)
+   → "The core responsibility of this function/file is X; it corresponds to the minimal version's Y"
+   → "Today we'll only look at the most critical M of these N lines (not all N)"
+   → "After this, you should be able to say: this file does these 3 things"
+
+2. Teach by functional block (5-15 lines per block)
+   → Don't go line by line! Group by "what does this block do"
+   → At the start of each block: "What's this block doing? Take a minute to guess"
+   → Student guesses, then teacher fills in 1-2 key lines of explanation, skips the rest
+   → At the end of each block: "Which step of the minimal version does this map to?" — student says it
+
+3. Highlight key lines
+   → "Line N is the key one — it corresponds to the minimal version's Z"
+   → ≤5 key lines per file
+
+4. Explain industrial details
+   → "There's extra error handling / timeout / lock here because..."
+   → Every extra line has a "why" — if there isn't one, skip it
 ```
 
 ---
 
-## §4. 场景 D：脱困策略（学生卡住时）
+## §4. Scenario D: unblocking strategies (student is stuck)
 
-### §4.1 检查点 A 失败时（学生无法用自己的话解释概念）
+### §4.1 When Checkpoint A fails (student can't explain the concept in their own words)
 
-**症状**：学生说"我懂了"但说不出具体是什么；或解释中混用了术语；或答非所问。
+**Symptoms**: student says "I get it" but can't articulate what; or mixes jargon into the explanation; or answers a different question.
 
-**策略**（按顺序尝试，每步最多 5 分钟）：
+**Strategy** (try in order, 5 min max per step):
 
-#### 步骤 1：换"反向论证"角度
+#### Step 1: switch to a "reverse argument" angle
 
-问："如果没有 {这个概念}，会发生什么最糟糕的事？"
+Ask: "If {this concept} didn't exist, what's the worst thing that would happen?"
 
-**为什么有效**：让学生从"是什么"变成"为什么需要它"——通常更容易触发理解。"是什么"是定义题，"为什么"是动机题，动机题更容易出真知。
+**Why this works**: it shifts the student from "what is it" to "why do we need it" — usually easier to trigger understanding. "What is it" is a definition question; "why" is a motivation question; motivation questions surface real understanding.
 
-#### 步骤 2：给更小的具体例子
+#### Step 2: give a smaller concrete example
 
-不换概念，换例子。把例子缩小到最小可理解单元，并且**用学生熟悉的领域**：
-
-```
-原例（学生卡住）：
-  "ReAct 是 Reasoning + Acting 的循环"
-
-退到学生熟悉的领域：
-  "你写代码遇到不认识的 API，会怎么做？
-   先猜一下用法（推理）→ 跑一下看报错（行动）→ 看报错继续猜（推理）→
-   再跑（行动）。直到对。这就是 ReAct——边查资料边写代码，不是查完所有
-   资料才开始写，也不是闭着眼睛瞎写。"
-
-立刻 Repack：
-  "这个'边查边写'的循环，学术上叫 ReAct"
-```
-
-#### 步骤 3：找到知识盲点的前置概念
-
-卡住的原因可能不是这个概念难，而是前置概念没打通。
-
-问："你能解释 {前置概念} 吗？"
-- 能 → 那盲点在这个新概念本身，回步骤 1-2
-- 不能 → 退回去，先把前置概念讲清楚
-
-#### 步骤 4：最后手段——退回设计文档
-
-"我们回去看一下 `stage-2-architecture/{对应文档}.md` 的 §1-§2，你来读给我听。"
-
-让学生**自己读**，有问题立刻问——主动读比被动听效率高 3 倍。
-
-#### 总原则
-
-- 最多在检查点 A 卡 20 分钟
-- 超过 20 分钟说："我们先搁置，去看代码，回头再来理解这个概念"——这是合理的退路，不是失败
-- 卡住是常态，不是耻辱
-
-### §4.2 检查点 B 失败时（学生找不到代码入口）
-
-**症状**：学生打开文件不知道看哪里；或搜错了关键词；或滚动了 10 分钟还在 import 语句之间游荡。
-
-**策略**（按顺序尝试）：
-
-#### 步骤 1：不讲内容，只演示"如何导航"
-
-打开文件，用 grep / IDE 搜索找入口：
+Don't switch concept, switch example. Shrink the example to the smallest understandable unit, and **use a domain the student already knows**:
 
 ```
-"在 attempt.ts 里搜索 runEmbeddedAttempt，看到了吗？"
+Original example (student stuck):
+  "ReAct is a Reasoning + Acting loop"
+
+Fall back to a domain the student knows:
+  "When you're writing code and hit an API you don't know, what do you do?
+   You guess how to use it (reasoning) → run it and see the error (action) →
+   look at the error and guess again (reasoning) → run again (action). Until
+   it works. That's ReAct — looking things up while writing code, not reading
+   everything before you start, and not writing blindly."
+
+Immediately Repack:
+  "This 'look-it-up-while-writing' loop is called ReAct in the literature."
 ```
 
-**目的**：学会工具，不是理解内容——找到比理解更重要。
+#### Step 3: find the prerequisite concept behind the blind spot
 
-#### 步骤 2：给更精确的搜索关键词
+The reason they're stuck might not be that this concept is hard — it might be that a prerequisite concept never landed.
+
+Ask: "Can you explain {prerequisite concept}?"
+- Yes → the blind spot is in the new concept itself; go back to steps 1-2
+- No → back up, land the prerequisite first
+
+#### Step 4: last resort — fall back to the design doc
+
+"Let's go back to `stage-2-architecture/{matching doc}.md` §1-§2; read it out loud to me."
+
+Have the student **read it themselves**, asking questions as they go — active reading is 3x more efficient than passive listening.
+
+#### General principle
+
+- Spend at most 20 minutes stuck at Checkpoint A
+- Over 20 minutes → say "Let's set this aside, look at the code, come back to this concept later" — that's a legitimate exit, not failure
+- Getting stuck is normal, not shameful
+
+### §4.2 When Checkpoint B fails (student can't find the code entry)
+
+**Symptoms**: student opens the file and doesn't know where to look; searched for the wrong keyword; scrolled for 10 minutes still wandering between import statements.
+
+**Strategy** (try in order):
+
+#### Step 1: don't teach content, demo "how to navigate"
+
+Open the file; use grep / IDE search to find the entry:
 
 ```
-错：
-  "你去找 ReAct 循环在哪。"（关键词太抽象）
-
-对：
-  "搜索 activeSession.prompt，这是触发 ReAct 循环的那一行。"
+"In attempt.ts, search for runEmbeddedAttempt. See it?"
 ```
 
-每次只给一个关键词，不要同时给多个目标。
+**Goal**: learn the tool, not understand the content — finding it matters more than understanding it.
 
-#### 步骤 3：手把手第一次，学生独立第二次
-
-```
-"我找给你看：第 1627 行，你看到了吗？好，现在关掉，你自己重新找一遍。"
-```
-
-**验证标准**：学生能独立重复，不是老师给出答案。
-
-#### 步骤 4：简化导航目标
-
-如果整个文件太复杂，缩小目标：
+#### Step 2: give a more precise search keyword
 
 ```
-"忘了其他的，只找到这一行：attempt.ts:991。能找到吗？"
+Wrong:
+  "Go find where the ReAct loop is." (too abstract)
+
+Right:
+  "Search for activeSession.prompt — that's the line that triggers the ReAct loop."
 ```
 
-能找到一行 = 检查点 B 过关。
+One keyword at a time; don't give multiple targets at once.
 
-#### 总原则
+#### Step 3: hand-hold once, independent next time
 
-- 检查点 B 失败大部分时候是"文件太大 + 没有地图"
-- 给精确行号，不是"大概在中间某个地方"
-- 如果反复给精确行号还找不到，说明工具用得不熟——优先教工具（IDE 跳转、grep）
+```
+"Let me show you: line 1627, can you see it? Good — now close it and find it yourself."
+```
+
+**Verification criterion**: the student can repeat the action independently, not that the teacher gave the answer.
+
+#### Step 4: simplify the navigation target
+
+If the whole file is too complex, shrink the target:
+
+```
+"Forget the rest — just find this one line: attempt.ts:991. Can you find it?"
+```
+
+Finding one line = passing Checkpoint B.
+
+#### General principle
+
+- Most Checkpoint B failures are "file too big + no map"
+- Give precise line numbers, not "roughly somewhere in the middle"
+- If they still can't find it after repeated precise line numbers, the tool isn't familiar — teach the tool first (IDE jumps, grep)
 
 ---
 
-## §5. 场景 E：60 分钟单文件精读模板
+## §5. Scenario E: 60-minute single-file deep read template
 
-适用：学生已过检查点 B，准备深入读一个核心文件（如 OpenClaw 的 `attempt.ts`、vLLM 的 `core/scheduler.py`）。
+Use case: the student has passed Checkpoint B and is ready to deeply read a core file (e.g., OpenClaw's `attempt.ts`, vLLM's `core/scheduler.py`).
 
-### 0-10 分钟：建立预期
-
-```
-"这个文件的核心职责是 X，对应最简版的 Y。"
-"今天我们只看全文件 N 行里最关键的 M 行（不是全部 N 行）。"
-"读完之后，你应该能说出：这个文件做了哪 3 件事。"
-```
-
-**为什么这 10 分钟决定后面 50 分钟的效率**：学生知道终点，才不会在中途迷路。
-
-### 10-40 分钟：按功能区块讲（每块 5-15 行，分 4-6 段）
-
-对每个区块：
-
-1. 告诉学生这块的起止行：`第 754-796 行`
-2. 问："这一块在做什么？"（给 1 分钟让学生猜）
-3. 解释核心 1-2 行，其余略过："第 756 行是关键，其他是参数配置"
-4. 问："这对应最简版的哪一步？"（让学生说，不是老师说）
-
-**关键原则**：
-
-> 不要逐行讲！逐行讲是信息传递，不是理解建立。
-> 学生能说出"这一块做 X"比老师讲"第 i 行做 a，第 i+1 行做 b"有效 10 倍。
-
-### 40-55 分钟：工业级增强解释
+### 0-10 min: set expectations
 
 ```
-"我们最简版这里只需要 5 行，repo 用了 50 行，多出来的是："
+"The core responsibility of this file is X; it corresponds to the minimal version's Y."
+"Today we'll only look at the most critical M of the N total lines (not all N)."
+"After this, you should be able to say: this file does these 3 things."
 ```
 
-逐条列出增强项（最多 5 条），每条 1-2 句话：
+**Why these 10 minutes determine the efficiency of the next 50**: the student knows the endpoint, so they won't get lost in the middle.
 
-- 并发锁：防止两个消息同时写
-- 事件订阅：流式转发 token 到用户界面
-- 工具过滤：不同 LLM 提供商的格式差异
-- 沙盒配置：工作目录隔离
-- 系统提示报告：可观测性，用于调试
+### 10-40 min: teach by functional block (5-15 lines each, 4-6 blocks)
 
-**核心话术**："每一条都是'做同一件事，但更稳健'，不是新概念"
+For each block:
 
-### 55-60 分钟：验证
+1. Tell the student the line range: `lines 754-796`
+2. Ask: "What's this block doing?" (give 1 min for them to guess)
+3. Explain the key 1-2 lines, skip the rest: "Line 756 is the key one; the rest is parameter config"
+4. Ask: "Which step of the minimal version does this map to?" (student says it, not the teacher)
 
-给 3 个精确检验问题：
+**Key principle**:
 
-1. **file:line 定位**："找到触发 ReAct 循环的那一行"（期望：`attempt.ts:1627`）
-2. **概念对照**："最简版的 `messages=[]` 在这个文件里变成了什么？"（期望：`SessionManager.open`，第 991 行）
-3. **增强理解**："为什么这里要用文件锁，最简版不需要？"（期望：并发场景，多消息同时写）
+> Don't go line by line! Line-by-line is information transfer, not understanding.
+> The student saying "this block does X" is 10x more effective than the teacher saying "line i does a, line i+1 does b."
 
-**通过标准**：
-- 三题全对 → 这个文件精读完成
-- 有一题答不上 → 回到对应功能区块重讲（最多 10 分钟）
+### 40-55 min: industrial enhancements explanation
+
+```
+"Our minimal version needs 5 lines here; the repo uses 50. The extras are:"
+```
+
+List the enhancements (max 5), each 1-2 sentences:
+
+- Concurrency lock: prevents two messages writing at the same time
+- Event subscription: streams tokens to the user interface
+- Tool filtering: handles format differences between LLM providers
+- Sandbox config: working-directory isolation
+- System prompt reporting: observability for debugging
+
+**Key phrasing**: "Each one is 'same thing, just sturdier' — not a new concept."
+
+### 55-60 min: verify
+
+Give 3 precise test questions:
+
+1. **file:line location**: "Find the line that triggers the ReAct loop." (Expected: `attempt.ts:1627`)
+2. **Concept mapping**: "What does the minimal version's `messages=[]` become in this file?" (Expected: `SessionManager.open`, line 991)
+3. **Enhancement understanding**: "Why does this code need a file lock when the minimal version doesn't?" (Expected: concurrent scenario, multiple messages writing simultaneously)
+
+**Pass criteria**:
+- All 3 correct → this file's deep read is done
+- One wrong → go back to the relevant functional block and re-teach (max 10 min)
 
 ---
 
-## §5b. 场景 F：stage-0 动手过程的伴学节奏（V2 新增）
+## §5b. Scenario F: companion pacing during stage-0 hands-on (added in V2)
 
-适用：Phase 2.5 评估学生为 A/B/C/D 级，已 clone stage-0 推荐 repo，开始动手。
+Use case: Phase 2.5 has assessed the student as A/B/C/D-level; they've cloned the stage-0 recommended repo and are getting hands-on.
 
-老师在 stage-0 阶段的角色**与 stage-1/2/3 不同**——这里不是"老师讲学生听"，而是"学生跑代码、老师答疑+检验"。原则：**让学生先卡住、自己挣扎一下，再答疑**——动手失败是学习的一部分。
+The teacher's role in stage-0 is **different from stage-1/2/3** — it's not "teacher explains, student listens"; it's "student runs code, teacher answers questions + verifies." Principle: **let the student get stuck and struggle a bit first, then answer** — hands-on failure is part of learning.
 
-### Stage-0 整体节奏（多次教学/伴学，总计 3-15 小时不等）
+### Stage-0 overall pacing (multiple sessions, total 3-15 hours)
 
 ```
-开场（1 次教学，30 分钟）：建立预期
-  1. 跟学生过一遍 stage-0-fundamentals/README.md
-  2. 确认推荐 repo（如果有多个）→ 让学生挑一个主线
-  3. 解释为什么 stage-0 重要（动手 = 肌肉记忆 = 看 openclaw 时不抽象）
-  4. 跟学生过 prerequisites.md → 一起跑通环境（按学生选定的 LLM 推理方式配置好）
-  5. 让学生先跑 hello-world（最小可运行示例）—— 第一次教学结束
+Opening (1 session, 30 min): set expectations
+  1. Walk the student through stage-0-fundamentals/README.md
+  2. Confirm the recommended repo (if multiple) → have the student pick a main line
+  3. Explain why stage-0 matters (hands-on = muscle memory = openclaw won't feel abstract)
+  4. Walk through prerequisites.md → set up the environment together (config the LLM inference style the student picked)
+  5. Have the student run hello-world (smallest runnable example) — first session ends
 
-伴学（多次按需，每次 20-45 分钟）：学生卡了就找老师
-  - 学生独立跑章节 N
-  - 卡住超过 15 分钟没解决 → 找老师
-  - 老师按"场景 B 答疑"4 步走
+Companion sessions (as-needed, 20-45 min each): student gets stuck, finds teacher
+  - Student works through chapter N independently
+  - Stuck for over 15 minutes with no resolution → find the teacher
+  - Teacher follows "Scenario B answer-questions" 4-step flow
 
-检验点（每完成 3-4 章 / 每完成核心 milestone）：
-  老师主动找学生，对照 graduation-check.md 验证
+Checkpoint (every 3-4 chapters / every core milestone):
+  Teacher proactively reaches out, verifies against graduation-check.md
 
-毕业检验（stage-0 走完后）：
-  按 graduation-check.md 逐项过。全部通过 → 进 stage-1
+Graduation check (after stage-0 is done):
+  Go through graduation-check.md item by item. All pass → move to stage-1
 ```
 
-### 老师在 stage-0 的关键动作
+### Key teacher actions during stage-0
 
-| 动作 | 何时 | 怎么做 |
+| Action | When | How |
 |------|------|-------|
-| **不主动讲解概念** | stage-0 期间 | 概念在 stage-1 讲。stage-0 学生用手感受 |
-| **答疑用 5W** | 学生卡住时 | "你跑了什么命令？""期望什么结果？""实际看到什么？""上一步对了吗？""有没有改过环境？" |
-| **不直接给答案** | 学生卡住时 | 引导学生看报错信息、查 README、自己解决。失败 + 自救 = 真理解。**最多卡 20 分钟才直接给答案** |
-| **强制改 system prompt** | 学完核心 ReAct 章节后 | "现在你不要照着原 repo 跑，自己改 system prompt 让 agent 行为变化"——证明学生真懂了 |
-| **强制加新 tool** | 学完 tool use 章节后 | "原 repo 有 calculator 和 search，你加一个 'get_weather' 工具试试"——证明学生能扩展 |
-| **graduation-check.md 逐项过** | stage-0 结束前 | 不通过不能进 stage-1 |
+| **Don't proactively explain concepts** | During stage-0 | Concepts are taught in stage-1. In stage-0, the student feels through their hands |
+| **Use 5W for Q&A** | When student is stuck | "What command did you run?" "What did you expect?" "What did you actually see?" "Did the previous step work?" "Did you change the environment?" |
+| **Don't give the answer directly** | When student is stuck | Guide them to read the error, check the README, solve it themselves. Failure + self-rescue = real understanding. **Stuck max 20 min before giving the answer directly** |
+| **Force a system prompt change** | After they finish the core ReAct chapter | "Now don't just follow the repo — change the system prompt to make the agent behave differently" — proves they get it |
+| **Force adding a new tool** | After the tool-use chapter | "The repo has calculator and search — add a 'get_weather' tool yourself" — proves they can extend |
+| **Run graduation-check.md item by item** | Before stage-0 ends | No pass, no stage-1 |
 
-### Stage-0 → stage-1 过渡的检验（毕业标准）
+### Stage-0 → stage-1 transition check (graduation criteria)
 
-**通用模板（领域无关）** —— graduation-check.md 应包含 5 题：
+**Universal template (domain-agnostic)** — graduation-check.md should include 5 questions:
 
-1. **基础理解**：你能不参考 README 解释 stage-0 repo 的**核心控制流**吗？（≤1 句话不用术语）
-2. **代码定位**：在 `{stage-0-repo}/{file}` 里找到该领域**关键骨架元素**的实现位置（具体骨架元素见 `multi-domain-examples.md` §1）。
-3. **能改不能写**：把 stage-0 repo 的**关键配置 / 行为参数**从 X 改成 Y，跑出来的行为差异是什么？（必须能描述）
-4. **能扩展**：在 stage-0 repo 基础上加一个**新功能单元**（具体功能按领域定），跑通并提交修改后的代码。
-5. **能问对问题**：用一句话说出"如果让你给这个 repo 加一个 `{stage-1 核心概念}`，你会怎么改 `{骨架元素}`？"（**这个问题是 stage-1 的钩子**）
+1. **Basic understanding**: without referencing the README, can you explain the stage-0 repo's **core control flow**? (≤1 sentence, no jargon)
+2. **Code location**: in `{stage-0-repo}/{file}`, find where the domain's **key skeleton element** is implemented (concrete skeleton elements: see `multi-domain-examples.md` §1).
+3. **Can modify but not yet build**: change the repo's **key config / behavior parameter** from X to Y, and describe the behavior difference. (Must be describable.)
+4. **Can extend**: add a **new functional unit** (specific feature varies by domain) on top of the stage-0 repo, run it, commit the modified code.
+5. **Can ask the right question**: in one sentence, "if you wanted to add `{stage-1 core concept}` to this repo, how would you change `{skeleton element}`?" (**This question is the hook into stage-1**.)
 
-**领域具体化示例**：
+**Domain-specific examples**:
 
-| 领域 | 题 1（核心控制流） | 题 2（骨架元素定位） | 题 3（改） | 题 4（扩展） | 题 5（stage-1 钩子） |
+| Domain | Q1 (core control flow) | Q2 (skeleton element location) | Q3 (modify) | Q4 (extend) | Q5 (stage-1 hook) |
 |------|------|------|------|------|------|
-| AI Agent | "用一句话不用'agent/tool'解释你跑的 repo 在做什么循环" | 找 ReAct 三元组实现位置 | 改 system prompt 看行为变化 | 加一个新 tool | "怎么给这个 agent 加 memory（不用现成 memory tool）？" |
-| Web 框架 | "用一句话不用'middleware'解释请求怎么从浏览器到 handler" | 找 `next()` 链调用位置 | 改路由优先级 | 加一个新中间件 | "怎么给这个框架加 session 支持（不用现成的）？" |
-| 数据库内核 | "用一句话不用'cursor/page'解释一个 SELECT 怎么查到数据" | 找 cursor 操作位置 | 改 page size 看性能差异 | 加一个新 opcode | "怎么给这个 DB 加索引（不用现成的 index 模块）？" |
-| 编译器 | "用一句话不用'token/AST'解释源码怎么变成可执行的东西" | 找 tokenizer 入口位置 | 加一个新关键字 | 加一个新优化 pass | "怎么给这个编译器加调试信息（不用现成的 debug info）？" |
-| OS 内核 | "用一句话不用'寄存器'解释 OS 怎么同时跑多个程序" | 找 context switch 位置 | 改调度算法看性能差异 | 加一个新 syscall | "怎么给这个内核加虚拟内存（不用现成的 mmu）？" |
+| AI agent | "In one sentence, without 'agent/tool', explain what loop the repo is running" | Find where the ReAct triplet is implemented | Change system prompt, observe behavior diff | Add a new tool | "How would you add memory to this agent (without a built-in memory tool)?" |
+| Web framework | "In one sentence, without 'middleware', explain how a request goes from browser to handler" | Find where `next()` is called in the chain | Change route priorities | Add a new middleware | "How would you add session support (without a built-in)?" |
+| Database internals | "In one sentence, without 'cursor/page', explain how a SELECT finds its data" | Find where cursor operations live | Change page size, observe performance diff | Add a new opcode | "How would you add indexing (without a built-in index module)?" |
+| Compilers | "In one sentence, without 'token/AST', explain how source becomes something runnable" | Find the tokenizer entry | Add a new keyword | Add a new optimization pass | "How would you add debug info (without built-in debug info)?" |
+| OS kernels | "In one sentence, without 'register', explain how the OS runs multiple programs at once" | Find the context switch | Change the scheduling algorithm | Add a new syscall | "How would you add virtual memory (without a built-in MMU)?" |
 
-5 题全过 → 进 stage-1。过不了任何一题 → 回到对应章节重做。
+All 5 pass → stage-1. Any one fails → go back to the corresponding chapter and redo.
 
-**关键原则**：5 题的**结构**（理解 / 定位 / 改 / 扩展 / 钩子问题）跨领域统一，**具体内容**按领域定制。
+**Key principle**: the **structure** of the 5 questions (understand / locate / modify / extend / hook question) is cross-domain consistent; the **content** is customized per domain.
 
-### 老师常见的 stage-0 错误（禁忌，跨领域适用）
+### Common teacher mistakes during stage-0 (taboos, cross-domain)
 
 ```
-❌ 在 stage-0 阶段就开始讲该领域的核心理论 / 论文
-   （AI Agent 例：讲 ReAct 论文；Web 例：讲 RFC 7231；DB 例：讲 ACID 形式定义）
-   后果：学生还没动手感受过就被概念塞满 → 进入 stage-1 时已认知过载
+❌ Teaching the domain's core theory / papers during stage-0
+   (AI agent: explaining the ReAct paper; web: explaining RFC 7231; DB: explaining ACID formalism)
+   Consequence: student gets stuffed with concepts before feeling anything → enters stage-1 cognitively overloaded
 
-❌ 学生 5 分钟没解决问题就给答案
-   后果：学生没经过"挣扎-自救"循环 → 没建立肌肉记忆 → 看目标 repo 时还是抽象
+❌ Giving the answer after the student has been stuck for 5 minutes
+   Consequence: student didn't go through "struggle → self-rescue" → no muscle memory built → target repo still feels abstract
 
-❌ 让学生跑完 repo 所有章节再检验
-   后果：错过了过程中的概念盲点 → 毕业检验时一大堆问题不会答
+❌ Letting the student run through every chapter of the repo before verifying
+   Consequence: misses the concept blind spots along the way → graduation check is full of "I don't know"
 
-❌ 跳过 graduation-check 直接让学生进 stage-1
-   后果：学生没经过"用手感受 → 用术语描述"的转换 → stage-1 概念检查点必失败
+❌ Skipping graduation-check and going straight to stage-1
+   Consequence: student didn't go through "hands-on feel → describe with the term" → Checkpoint A in stage-1 will fail
 ```
 
-### Stage-0 与 stage-3 的衔接
+### Stage-0 → stage-3 connection
 
-stage-0 学过的代码会在 stage-3 §4.1 作为**首选**引用源被反复引用。老师在 stage-3 时要主动建立对照：
+The code learned in stage-0 will be the **preferred** reference in stage-3 §4.1, used repeatedly. In stage-3, the teacher should actively connect the dots:
 
-> "还记得你 stage-0 跑过的 `{repo}/{file}:{line}` 那个 `act()` 递归吗？OpenClaw 的 `attempt.ts:1627` 触发的就是同样的东西——只不过封装在 pi-agent-core 库里了。"
+> "Remember the `act()` recursion in `{repo}/{file}:{line}` you ran in stage-0? OpenClaw's `attempt.ts:1627` triggers the same thing — just wrapped inside the pi-agent-core library."
 
-学生听到"还记得你跑过的..."就有了感觉锚点，认知负荷立刻降一半。这是 stage-0 投入时间的最大回报。
+The student hears "remember the one you ran..." and immediately gets an experiential anchor — cognitive load drops by half. That's the biggest payoff of investing time in stage-0.
 
 ---
 
-## §6. 通用收尾：每次教学结束的标准动作
+## §6. Common closing: standard actions at the end of every lesson
 
-不论场景 A/B/C/E，每次教学结束时：
+Regardless of Scenario A/B/C/E, at the end of every lesson:
 
-1. **更新 `meta/progress.md`**
-   - 标记今天学了什么
-   - 记录学生卡在哪、掌握了什么
-   - 写明下次起点
+1. **Update `meta/progress.md`**
+   - Mark what was learned today
+   - Record where the student got stuck, what they internalized
+   - Write down the next starting point
 
-2. **预告下次**
-   - "下次我们看 {下一个 walkthrough}，预习材料是 `stage-2-architecture/{对应文档}.md`"
-   - 给学生明确的"作业"（读什么、想什么）
+2. **Preview the next lesson**
+   - "Next time we'll look at {next walkthrough}; the prep material is `stage-2-architecture/{matching doc}.md`"
+   - Give the student an explicit "assignment" (what to read, what to think about)
 
-3. **如果有未解决的疑问**
-   - 不要假装解决了
-   - 写到 `meta/progress.md` 的"挂起问题"列表
-   - 下次开课前 1 分钟回顾
+3. **If there are unresolved questions**
+   - Don't pretend they're resolved
+   - Write them to the "open questions" list in `meta/progress.md`
+   - Review for 1 minute at the start of next lesson

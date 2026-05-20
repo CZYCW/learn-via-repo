@@ -1,309 +1,309 @@
-# exercises/ 题库模板
+# exercises/ Problem Set Template
 
-> 每生成完一篇 `stage-3-walkthroughs/{NN}-{topic}.md`，立刻在 `exercises/` 三个文件中追加该主题的题。题目按 `## {NN}-{english-short-title}` 章节组织，与 walkthrough 文件名一一对应。**生成顺序**：先 walkthrough，再 exercises 三道追加，原子地完成同一主题。
+> Each time you finish a `stage-3-walkthroughs/{NN}-{topic}.md`, immediately append the topic's questions to all three files in `exercises/`. Questions are organized under `## {NN}-{english-short-title}` headings, one-to-one with the walkthrough filenames. **Generation order**: walkthrough first, then the three exercise files — atomically complete the same topic.
 >
-> 题目示例以 AI Agent 领域为主（教学验证过），其他领域同结构——见本文档 §6 跨领域示例附录。
+> Examples are mostly from the AI agent domain (the validated case); other domains use the same structure — see §6 cross-domain examples appendix.
 
 ---
 
-## 题库目录结构
+## Problem set directory structure
 
 ```
 exercises/
-├── README.md              ← 题库说明 + 难度图例 + 使用方法
-├── concept-checks.md      ← Feynman 式（概念是否真理解）
-├── code-finding.md        ← file:line 定位（能否独立追踪代码）
-└── transfer.md            ← 迁移到用户项目（能否应用）
+├── README.md              ← How to use + difficulty legend + usage
+├── concept-checks.md      ← Feynman-style (does the student really understand)
+├── code-finding.md        ← file:line location (can they trace code independently)
+└── transfer.md            ← Transfer to user's project (can they apply)
 ```
 
 ---
 
-## §1. concept-checks.md 模板（Feynman 式）
+## §1. concept-checks.md template (Feynman-style)
 
-**目的**：检验学生是否真的理解概念，而不是"以为自己懂了"。
-**何时做**：每完成一篇 walkthrough 的 §1-§3 后，进入 §4 代码前。这是教学节奏中的"检查点 A"。
-**通过标准**：用一句话不用术语解释 + 反向论证 + 用术语 Repack 都能做。
+**Goal**: check whether the student really understands the concept, not "thinks they do."
+**When**: after §1-§3 of each walkthrough, before entering §4 code. This is Checkpoint A in the teaching rhythm.
+**Pass criteria**: can explain in one sentence without jargon + reverse argument + Repack using jargon.
 
-### 模板（每个 topic 3 道）
+### Template (3 per topic)
 
 ```markdown
 ## {NN}-{english-short-title}
 
-### 概念检查 1：Feynman 一句话解释
+### Concept check 1: Feynman one-sentence explanation
 
-**问题**：用一句话，**不用任何术语**，告诉我 {核心概念} 解决了什么问题？
+**Question**: In one sentence, **without any jargon**, tell me what problem {core concept} solves.
 
-**通过标准**：
-- 不用 `{术语 1}` `{术语 2}` `{术语 3}` 等词
-- 一句话讲清楚痛点和解法
-- 让一个不懂这个领域的人也能听懂
+**Pass criteria**:
+- No use of `{term 1}` `{term 2}` `{term 3}` etc
+- One sentence covers both pain point and solution
+- A non-expert in this domain can follow
 
-**通过后追问**：
-"现在用术语重新表达一次"——必须能 Repack，否则说明概念还没内化。
-
----
-
-### 概念检查 2：反向论证
-
-**问题**：如果没有 {核心概念}，会发生什么最糟糕的事？
-
-**通过标准**：能描述至少 2 个具体场景，每个场景对应一个被 {核心概念} 解决的问题。
+**Follow-up after passing**:
+"Now describe it again using the terms" — must be able to Repack, otherwise the concept isn't internalized yet.
 
 ---
 
-### 概念检查 3：边界探测
+### Concept check 2: reverse argument
 
-**问题**：{核心概念} 在什么情况下会失效？或：什么场景下不应该用 {核心概念}？
+**Question**: If {core concept} didn't exist, what's the worst that would happen?
 
-**通过标准**：能识别该方案的局限，说明学生不是死背"X 是好的"，而是理解了 trade-off。
+**Pass criteria**: can describe at least 2 concrete scenarios, each matching a problem that {core concept} solves.
+
+---
+
+### Concept check 3: boundary probe
+
+**Question**: In what situation does {core concept} fail? Or: in what scenario shouldn't you use {core concept}?
+
+**Pass criteria**: can identify the approach's limitations, showing the student didn't just memorize "X is good" but understood the trade-off.
 ```
 
-### 3 个完整示例（基于 OpenClaw 教学）
+### 3 complete examples (based on OpenClaw teaching)
 
 ```markdown
 ## 02-react-loop-and-subagents
 
-### 概念检查 1：Feynman 一句话解释
+### Concept check 1: Feynman one-sentence explanation
 
-**问题**：用一句话，不用 "ReAct"、"工具"、"循环"、"递归" 等术语，告诉我 ReAct 解决了什么问题？
+**Question**: In one sentence, no "ReAct" / "tools" / "loop" / "recursion" jargon, tell me what problem ReAct solves.
 
-**通过标准**：能说出类似"让 AI 像人一样边查资料边写报告，而不是先全部查完再写或者干脆瞎编"。
+**Pass criteria**: something like "lets the AI look things up while writing a report, instead of looking everything up first or just making it up."
 
-**通过后追问**："现在用 Reasoning、Acting、Observation 三个术语描述刚才说的过程。"
-
-
-### 概念检查 2：反向论证
-
-**问题**：如果 LLM 只会推理不会行动，会发生什么？如果只会行动不会推理呢？
-
-**通过标准**：
-- 只推理不行动 → 幻觉（编造事实，因为模型只能用训练时的知识）
-- 只行动不推理 → 盲目（不知道该用哪个工具，工具间无法串联）
+**Follow-up**: "Now describe the same process using Reasoning, Acting, Observation."
 
 
-### 概念检查 3：边界探测
+### Concept check 2: reverse argument
 
-**问题**：什么任务用 ReAct 反而是 over-engineering？
+**Question**: If an LLM only reasoned and never acted, what would happen? What about acting without reasoning?
 
-**通过标准**：能说出"一次性回答类任务"（如"3+5等于几"）—— 这种任务不需要工具，纯 LLM 即可。
+**Pass criteria**:
+- Only reason, no action → hallucination (fabricates facts because the model only knows training-time data)
+- Only act, no reason → blindness (doesn't know which tool to use, can't chain tools)
+
+
+### Concept check 3: boundary probe
+
+**Question**: What kind of task is over-engineered with ReAct?
+
+**Pass criteria**: can identify "one-shot Q&A" tasks (e.g., "what's 3+5") — those don't need tools, plain LLM works.
 ```
 
 ---
 
-## §2. code-finding.md 模板（file:line 定位）
+## §2. code-finding.md template (file:line location)
 
-**目的**：检验学生能否独立打开 repo 文件找到关键代码——这是"独立追踪代码"能力的核心。
-**何时做**：每完成一篇 walkthrough 的 §4-§5 后。这是教学节奏中的"检查点 B+"。
-**通过标准**：3 题至少 2 题答对，且能给出精确 `file:line`。
+**Goal**: check whether the student can independently open a repo file and find the key code — that's the core of "independently tracing code."
+**When**: after §4-§5 of each walkthrough. This is Checkpoint B+ in the teaching rhythm.
+**Pass criteria**: at least 2 of 3 correct, with precise `file:line`.
 
-### 模板（每个 topic 3 道）
+### Template (3 per topic)
 
 ```markdown
 ## {NN}-{english-short-title}
 
-### 代码定位 1：核心入口
+### Code finding 1: core entry
 
-**问题**：打开 `{file}`，找到 {function/class/concept} 的实现行号。
+**Question**: Open `{file}`, find the line that implements {function/class/concept}.
 
-**期望答案**：`{file}:{line}`（{function_or_concept_name}）
+**Expected answer**: `{file}:{line}` ({function_or_concept_name})
 
-**追问**：这一行对应最简版的什么？
-
----
-
-### 代码定位 2：最简版映射
-
-**问题**：最简版的 `{minimal_var_or_func}` 在 repo 里变成了什么？
-
-**期望答案**：`{file}:{line}` 的 `{class.method}()`，因为 {为什么 repo 把它变成这样：通常是为了 并发安全 / 持久化 / 类型检查 / 错误处理 等}。
+**Follow-up**: Which step of the minimal version does this correspond to?
 
 ---
 
-### 代码定位 3：工业级增强追踪
+### Code finding 2: minimal-version mapping
 
-**问题**：repo 在 `{file}:{line}` 附近多做了一件最简版没做的事——是什么？为什么？
+**Question**: What did the minimal version's `{minimal_var_or_func}` turn into in the repo?
 
-**期望答案**：
-- 多做的事：{并发锁 / 超时控制 / TTL 缓存 / 等}
-- 为什么需要：{具体场景，如"两条消息同时进入同一 session 会写坏 transcript"}
+**Expected answer**: `{file}:{line}`'s `{class.method}()`, because {why the repo turned it into this — usually concurrency safety / persistence / type checking / error handling}.
+
+---
+
+### Code finding 3: industrial-enhancement trace
+
+**Question**: Near `{file}:{line}` the repo does one extra thing the minimal version doesn't — what is it? Why?
+
+**Expected answer**:
+- Extra: {concurrency lock / timeout / TTL cache / etc}
+- Why needed: {concrete scenario, e.g., "two messages entering the same session simultaneously would corrupt the transcript"}
 ```
 
-### 3 个完整示例（基于 OpenClaw 教学）
+### 3 complete examples (based on OpenClaw teaching)
 
 ```markdown
 ## 02-react-loop-and-subagents
 
-### 代码定位 1：核心入口
+### Code finding 1: core entry
 
-**问题**：打开 `src/agents/pi-embedded-runner/run/attempt.ts`，找到触发 ReAct 循环的那一行。
+**Question**: Open `src/agents/pi-embedded-runner/run/attempt.ts`, find the line that triggers the ReAct loop.
 
-**期望答案**：`attempt.ts:1627`，`await abortable(activeSession.prompt(effectivePrompt));`
+**Expected answer**: `attempt.ts:1627`, `await abortable(activeSession.prompt(effectivePrompt));`
 
-**追问**：这一行对应最简版的什么？
-**期望答案**：对应最简版的 `act()` 递归调用入口——`activeSession.prompt()` 内部跑完整的 LLM→tool_use→execute_tool→continue 循环。
-
-
-### 代码定位 2：最简版映射
-
-**问题**：最简版的 `messages = []` 在 OpenClaw 的 ReAct 入口附近变成了什么？
-
-**期望答案**：`attempt.ts:991` 的 `SessionManager.open(params.sessionFile)`——把内存列表换成了磁盘 JSONL 持久化，因为多消息间需要持久状态 + 重启恢复。
+**Follow-up**: Which step of the minimal version does this correspond to?
+**Expected answer**: corresponds to the minimal version's `act()` recursive entry — `activeSession.prompt()` runs the full LLM → tool_use → execute_tool → continue loop inside.
 
 
-### 代码定位 3：工业级增强追踪
+### Code finding 2: minimal-version mapping
 
-**问题**：`attempt.ts:991` 附近多做了一件最简版没做的事——是什么？为什么？
+**Question**: What did the minimal version's `messages = []` turn into near OpenClaw's ReAct entry?
 
-**期望答案**：
-- 多做的事：`guardSessionManager(...)` 包裹 + `acquireSessionWriteLock`（前面几行）
-- 为什么需要：防止同一 session 的两条并发消息同时写 transcript 导致错乱
+**Expected answer**: `attempt.ts:991`'s `SessionManager.open(params.sessionFile)` — swaps the in-memory list for disk JSONL persistence, because multi-message scenarios need persistent state + restart recovery.
+
+
+### Code finding 3: industrial-enhancement trace
+
+**Question**: Near `attempt.ts:991` the repo does one extra thing the minimal version doesn't — what is it? Why?
+
+**Expected answer**:
+- Extra: `guardSessionManager(...)` wrapping + `acquireSessionWriteLock` (a few lines earlier)
+- Why needed: prevents two concurrent messages on the same session from corrupting the transcript by writing simultaneously
 ```
 
 ---
 
-## §3. transfer.md 模板（迁移到用户项目）
+## §3. transfer.md template (transfer to user's project)
 
-**目的**：检验学生能否把学到的 repo 模式迁移到自己的目标项目——这是 Bloom 分类法的"Create"层。
-**何时做**：每完成一篇 walkthrough 的 §7 后，或全部 walkthrough 完成后整体复盘。
-**通过标准**：无标准答案，但学生能说出"这个模式在我的项目里这样用 / 这个模式不适合我的项目，因为...，我要这样改"，就算通过。
+**Goal**: check whether the student can transfer the repo's patterns to their own target project — this is the "Create" level of Bloom's taxonomy.
+**When**: after §7 of each walkthrough, or in a full review after all walkthroughs.
+**Pass criteria**: no standard answer, but the student can say "I'll use this pattern in my project this way" / "this pattern doesn't fit my project because ..., so I'll change it to ..." — passes.
 
-### 模板（每个 topic 2 道）
+### Template (2 per topic)
 
 ```markdown
 ## {NN}-{english-short-title}
 
-### 迁移应用 1：直接复用
+### Transfer 1: direct reuse
 
-**问题**：repo 的 `{核心模式}` 在你的项目（{user_project}）里可以怎么用？
+**Question**: How can the repo's `{core pattern}` be used in your project ({user_project})?
 
-**思考方向**：
-- 你项目里有没有类似 {repo 的问题场景} 的需求？
-- 直接照搬可行吗？需要调哪些参数？
-- 用你项目的具体场景描述一遍这个模式的应用。
+**Direction**:
+- Does your project have a similar scenario to {the repo's problem scenario}?
+- Can you copy it directly? Which parameters need to change?
+- Describe the pattern's application using a concrete scenario from your project.
 
 ---
 
-### 迁移应用 2：识别不适用 + 改造
+### Transfer 2: identify when it doesn't fit + redesign
 
-**问题**：repo 的 `{核心模式}` 在你的项目里**不能直接用**，原因可能是 {不适用原因示例}。识别这个差异，并提出改造方案。
+**Question**: The repo's `{core pattern}` **can't be used directly** in your project — possibly because {example reason}. Identify the gap and propose a redesign.
 
-**思考方向**：
-- repo 假设了什么前提（如单用户 / 本地部署 / markdown 友好）？
-- 你的项目有什么不同前提（多用户 / 云部署 / 结构化数据）？
-- 在你的前提下，这个模式应该怎么改？要保留什么、要替换什么？
+**Direction**:
+- What did the repo assume (single user / local deploy / markdown-friendly)?
+- What's different in your project (multi-user / cloud / structured data)?
+- Under your assumptions, how should the pattern change? Keep what, replace what?
 ```
 
-### 3 个完整示例（基于 OpenClaw → Mnemos / AI 教练）
+### 3 complete examples (based on OpenClaw → Mnemos / AI coach)
 
 ```markdown
 ## 03-session-and-memory
 
-### 迁移应用 1：直接复用
+### Transfer 1: direct reuse
 
-**问题**：OpenClaw 的"三层记忆"（Bootstrap 热 / Semantic 温 / Episodic 冷）在 Mnemos 里可以怎么用？
+**Question**: How can OpenClaw's "three-tier memory" (Bootstrap hot / Semantic warm / Episodic cold) be used in Mnemos?
 
-**思考方向**：
-- Mnemos 的"用户档案"对应 OpenClaw 的什么？（→ Bootstrap）
-- Mnemos 的"历史咨询事件"对应什么？（→ Episodic）
-- Mnemos 的"按主题检索"对应什么？（→ Semantic）
-- 三层各自的容量上限和检索策略，你怎么定？
+**Direction**:
+- What in Mnemos corresponds to OpenClaw's "user profile"? (→ Bootstrap)
+- What corresponds to "historical consultation events"? (→ Episodic)
+- What corresponds to "topic-based retrieval"? (→ Semantic)
+- What capacity limit and retrieval strategy would you set for each tier?
 
 
-### 迁移应用 2：识别不适用 + 改造
+### Transfer 2: identify when it doesn't fit + redesign
 
-**问题**：OpenClaw 的"文件即真相 + SQLite 索引"在 Mnemos 里**不能直接用**，因为 Mnemos 是多用户云服务。识别这个差异，并改造。
+**Question**: OpenClaw's "file is the source of truth + SQLite index" **can't be used directly** in Mnemos because Mnemos is a multi-user cloud service. Identify the gap and redesign.
 
-**思考方向**：
-- OpenClaw 假设了"单用户 + 本地文件 + 用户可直接编辑 markdown"——你的多用户场景这些都不成立
-- 改造方向：Postgres + pgvector 替代 SQLite + sqlite-vec，但保留"导出为 markdown"接口让用户可审查
-- 必须保留的设计：三层架构（不变）、Hybrid + MMR + Temporal Decay（不变）、Memory Flush（思想保留，实现升级为写结构化记忆）
-- 必须改的设计：单文件存储→分用户分表、文件系统 watcher→Postgres trigger / CDC
+**Direction**:
+- OpenClaw assumes "single user + local files + user can edit markdown directly" — none of these hold in your multi-user scenario
+- Redesign direction: Postgres + pgvector instead of SQLite + sqlite-vec, but keep "export as markdown" so users can audit
+- Must keep: three-tier architecture (unchanged), Hybrid + MMR + Temporal Decay (unchanged), Memory Flush (idea kept, implementation upgraded to write structured memory)
+- Must change: single-file storage → per-user table partitioning, file system watcher → Postgres trigger / CDC
 ```
 
 ---
 
-## §4. README.md（exercises/）模板
+## §4. README.md (exercises/) template
 
 ```markdown
-# Exercises 题库使用指南
+# Exercises Guide
 
-## 三类题的差异
+## Difference between the three types
 
-| 类型 | 检验 | 何时做 | 通过标准 |
+| Type | Checks | When | Pass criteria |
 |------|------|--------|---------|
-| concept-checks | 概念真理解（Feynman） | 学完每篇 walkthrough 的 §1-§3 后 | 一句话不用术语+反向论证+Repack |
-| code-finding | 代码定位能力 | 学完每篇 walkthrough 的 §4-§5 后 | 3 题至少 2 题给出精确 file:line |
-| transfer | 迁移到自己项目 | §7 之后或整体复盘 | 无标准答案，能说出"我项目里怎么用" |
+| concept-checks | Real concept understanding (Feynman) | After §1-§3 of each walkthrough | One sentence no jargon + reverse argument + Repack |
+| code-finding | Code-location ability | After §4-§5 of each walkthrough | At least 2 of 3 with precise file:line |
+| transfer | Transfer to your project | After §7 or overall review | No standard answer; can say "how I'd use it in my project" |
 
-## 难度图例
+## Difficulty legend
 
-- 🟢 简单：能在 1 分钟内回答
-- 🟡 中等：需要思考 2-5 分钟
-- 🔴 困难：需要回到代码或文档查证 5-15 分钟
+- 🟢 Easy: answer in 1 minute
+- 🟡 Medium: think for 2-5 minutes
+- 🔴 Hard: go back to code or docs for 5-15 minutes
 
-## 与 walkthrough 的对应
+## Correspondence with walkthroughs
 
-每个 `## {NN}-{english-short-title}` 章节对应 `stage-3-walkthroughs/{NN}-{english-short-title}.md`。
+Each `## {NN}-{english-short-title}` heading maps to `stage-3-walkthroughs/{NN}-{english-short-title}.md`.
 
-学完一篇 walkthrough 后，按顺序做：
-1. concept-checks.md#{NN}-{topic}（如果卡住，回到 walkthrough §1-§3）
-2. code-finding.md#{NN}-{topic}（如果卡住，回到 walkthrough §4-§5）
-3. transfer.md#{NN}-{topic}（无答案，但要说出来）
+After finishing a walkthrough, in order:
+1. concept-checks.md#{NN}-{topic} (if stuck, go back to walkthrough §1-§3)
+2. code-finding.md#{NN}-{topic} (if stuck, go back to walkthrough §4-§5)
+3. transfer.md#{NN}-{topic} (no answer key, but say it out loud)
 ```
 
 ---
 
-## §5. 反例：什么样的检验题不合格
+## §5. Anti-examples: what makes a question disqualified
 
 ```
-❌ "你理解 ReAct 了吗？"
-   问题：太主观，学生可以撒谎说"理解了"
-   修正：用 Feynman 一句话检验
+❌ "Do you understand ReAct?"
+   Problem: too subjective; student can lie and say "yes"
+   Fix: use a Feynman one-sentence check
 
-❌ "解释 pi-agent-core 的作用。"
-   问题：太宽泛，没有明确通过标准
-   修正：拆为多个精确的 file:line 定位题
+❌ "Explain the role of pi-agent-core."
+   Problem: too broad, no clear pass criterion
+   Fix: split into multiple precise file:line questions
 
-❌ "ReAct Loop 中需要哪些 tools？"
-   问题：开放设计题，不可验证
-   修正：改为"找到 attempt.ts 里组装工具列表的那个函数，它叫什么"
+❌ "Which tools are needed in the ReAct Loop?"
+   Problem: open-ended design question, not verifiable
+   Fix: change to "find the function that assembles the tool list in attempt.ts"
 
-❌ "如果让你设计一个 ReAct 系统，你会怎么做？"
-   问题：太大，学生可以无穷展开
-   修正：归为 transfer.md，限定到"在你的项目场景下"
+❌ "If you were designing a ReAct system, how would you do it?"
+   Problem: too big; the student can ramble indefinitely
+   Fix: move to transfer.md, constrain to "in your project's scenario"
 ```
 
 ---
 
-## §6. 跨领域示例附录（V3 新增）
+## §6. Cross-domain examples appendix (added in V3)
 
-上面 §1-§4 示例以 AI Agent 领域为主。其他领域同结构，下面是各领域 1 道示例：
+Examples in §1-§4 above are mostly AI-agent flavored. Other domains use the same structure — here's one example from each domain:
 
-### concept-checks 跨领域示例
+### concept-checks cross-domain examples
 
-| 领域 | 概念 | Feynman 一句话题 |
+| Domain | Concept | Feynman one-sentence question |
 |------|------|----------------|
-| Web 框架 | middleware 链 | "用一句话不用'middleware/next'术语，告诉我 `app.use(...)` 解决了什么问题？" |
-| 数据库内核 | B-tree | "用一句话不用'B-tree/page'术语，告诉我 B-tree 为什么比链表快？" |
-| 编译器 | tokenization | "用一句话不用'token/lexer'术语，告诉我编译器为什么先把源码切成片段？" |
-| OS 内核 | context switch | "用一句话不用'寄存器/堆栈'术语，告诉我 OS 怎么让多个程序同时跑？" |
+| Web framework | middleware chain | "In one sentence, no 'middleware/next' jargon, tell me what problem `app.use(...)` solves." |
+| Database internals | B-tree | "In one sentence, no 'B-tree/page' jargon, tell me why a B-tree is faster than a linked list." |
+| Compiler | tokenization | "In one sentence, no 'token/lexer' jargon, tell me why a compiler first slices the source into pieces." |
+| OS kernel | context switch | "In one sentence, no 'register/stack' jargon, tell me how the OS runs multiple programs at once." |
 
-### code-finding 跨领域示例
+### code-finding cross-domain examples
 
-| 领域 | 定位题 | 期望答案格式 |
+| Domain | Location question | Expected answer format |
 |------|------|------------|
-| Web 框架 | "打开 Express 的 application.js，找到 `app.use` 的实现行" | `application.js:228` |
-| 数据库内核 | "打开 SQLite 的 btree.c，找到 cursor 的入口函数" | `btree.c:5234` 的 `sqlite3BtreeNext` |
-| 编译器 | "打开 Acorn 的 parser/expression.js，找到表达式解析入口" | `parser/expression.js:90` |
-| OS 内核 | "打开 xv6 的 trap.c，找到系统调用分发的那一行" | `trap.c:67` 附近 `syscall()` |
+| Web framework | "Open Express's application.js, find the implementation of `app.use`" | `application.js:228` |
+| Database internals | "Open SQLite's btree.c, find the cursor entry function" | `btree.c:5234`'s `sqlite3BtreeNext` |
+| Compiler | "Open Acorn's parser/expression.js, find the expression-parsing entry" | `parser/expression.js:90` |
+| OS kernel | "Open xv6's trap.c, find the syscall dispatch line" | near `trap.c:67`, `syscall()` |
 
-### transfer 跨领域示例
+### transfer cross-domain examples
 
-| 领域 | 迁移题 |
+| Domain | Transfer question |
 |------|------|
-| Web 框架 | "目标 repo 的中间件链在你的项目里可以怎么用？比如你的 API gateway / 自己写 web app 时怎么复用？" |
-| 数据库内核 | "目标 repo 的 cursor 抽象在你的项目里可以怎么用？比如你做流式数据处理时怎么借鉴？" |
-| 编译器 | "目标 repo 的 AST visitor 模式在你的项目里可以怎么用？比如你做配置解析时怎么借鉴？" |
-| OS 内核 | "目标 repo 的进程调度算法在你的项目里可以怎么用？比如你的 worker pool 怎么借鉴？" |
+| Web framework | "How can the target repo's middleware chain be used in your project? E.g., when you build your API gateway / your own web app, how would you reuse it?" |
+| Database internals | "How can the target repo's cursor abstraction be used in your project? E.g., how would you borrow from it when doing streaming data processing?" |
+| Compiler | "How can the target repo's AST visitor pattern be used in your project? E.g., how would you borrow from it when building a config parser?" |
+| OS kernel | "How can the target repo's process scheduling algorithm be used in your project? E.g., how would your worker pool borrow from it?" |
 
-具体某个领域更详细的示例题，可在 walkthrough 配套生成时按本附录格式动态扩充。
+For more detailed per-domain questions, expand dynamically following this appendix's format when generating the walkthrough companion.

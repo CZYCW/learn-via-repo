@@ -1,61 +1,61 @@
-# 跨领域完整 walkthrough 示例
+# Cross-Domain Full Walkthrough Examples
 
-> 这是 `walkthrough-template.md` 的配套文件。模板本身用 AI Agent / OpenClaw 做主示例，本文件用另外两个领域的**缩略版完整 walkthrough**让 AI 看清楚"同一个九章模板在不同领域是什么样"。
+> This is the companion file to `walkthrough-template.md`. The template itself uses AI agents / OpenClaw as the main example; this file uses **condensed full walkthroughs** in two other domains so the AI can see "what the same nine-section template looks like in a different domain."
 >
-> 每个示例都是缩略版（每章 5-15 行说明），不是完整教学材料。真实生成时按 walkthrough-template.md 的字数要求展开。
+> Each example is condensed (5-15 lines per section), not full teaching material. When generating an actual walkthrough, expand to the word counts specified in walkthrough-template.md.
 
 ---
 
-## 目录（Table of Contents）
+## Table of Contents
 
-- **示例一：Web 框架领域 / Express** —— middleware 链 walkthrough
-  - §0 通用视角 —— Pipe-and-Filter 架构思想
-  - §1 这个模块解决什么问题 —— middleware 注册 + 链调度
-  - §2 核心概念 —— middleware / Layer / Router / next / 错误冒泡
-  - §3 整体架构 —— 主 Router + Sub Router 嵌套
-  - §4 最简对照法实战 —— 30 行最简 vs Express 实际代码
-  - §5 代码导航 —— 从 app.handle 到 layer.handle_request
-  - §6 检验问题 / §7 对用户项目的启发 / §8 延伸阅读
-- **示例二：数据库内核领域 / SQLite** —— B-tree cursor walkthrough
-  - §0 通用视角 —— Bayer & McCreight 1971 B-tree 理论
-  - §1 这个模块解决什么问题 —— 数据按页组织 + cursor 状态机
-  - §2 核心概念 —— Page / Cell / Cursor / BtNode / WAL
-  - §3 整体架构 —— SELECT 从 SQL 到 cursor 的完整 mermaid 图
-  - §4 最简对照法实战 —— 15 行最简 cursor vs SQLite 实际代码
-  - §5 代码导航 —— 从 OP_OpenRead 到 sqlite3BtreeNext
-  - §6 检验问题 / §7 对用户项目的启发 / §8 延伸阅读
-- **怎么用这两个示例** —— 给 AI 的指引 + 跨领域 9 章模板是稳定的论证
-
----
-
-## 示例一：Web 框架领域 / Express
-
-**假设场景**：学生想学 Web 后端框架，目标 repo 选了 [expressjs/express](https://github.com/expressjs/express)。学生在 stage-0 跑通了某个"几百行 from scratch 实现 Express middleware"的 beginner repo（具体由 Phase 2C 搜索 + 用户评估决定）。
-
-walkthrough 主题：**一条 HTTP 请求从 `app.use` 注册到最终 `res.send` 响应的完整路径**。
+- **Example 1: web framework domain / Express** — middleware chain walkthrough
+  - §0 General view — Pipe-and-Filter architecture
+  - §1 What problem does this module solve — middleware registration + chain dispatch
+  - §2 Core concepts — middleware / Layer / Router / next / error bubbling
+  - §3 Overall architecture — main Router + sub Router nesting
+  - §4 Minimal Comparison Method — 30-line minimal vs Express actual code
+  - §5 Code navigation — from `app.handle` to `layer.handle_request`
+  - §6 Test questions / §7 Implications / §8 Further reading
+- **Example 2: database internals / SQLite** — B-tree cursor walkthrough
+  - §0 General view — Bayer & McCreight 1971 B-tree theory
+  - §1 What problem does this module solve — data organized by pages + cursor state machine
+  - §2 Core concepts — Page / Cell / Cursor / BtNode / WAL
+  - §3 Overall architecture — full mermaid diagram from SQL to cursor for a SELECT
+  - §4 Minimal Comparison Method — 15-line minimal cursor vs SQLite actual code
+  - §5 Code navigation — from OP_OpenRead to sqlite3BtreeNext
+  - §6 Test questions / §7 Implications / §8 Further reading
+- **How to use these two examples** — guidance to the AI + argument that the 9-section template is stable across domains
 
 ---
 
-### §0. 通用视角
+## Example 1: web framework domain / Express
 
-> 现代 Web 框架几乎都用 **middleware 链**这个抽象——一个请求进来，按注册顺序经过一串函数，每个函数可以加工 req/res 对象，然后通过 `next()` 把控制权交给下一个。
+**Hypothetical scenario**: student wants to learn web backend frameworks; target repo is [expressjs/express](https://github.com/expressjs/express). In stage-0 the student worked through some "Express middleware from scratch in a few hundred lines" beginner repo (chosen via Phase 2C search + user evaluation).
 
-**学术/工程界的核心洞察**：这个模式来自 Doug Crockford 的 Pipe-and-Filter 架构思想，被 Connect (2010) 首次用在 Node.js 上，Express 继承下来成为事实标准。核心洞察：HTTP 请求的处理本质是"流水线加工"——身份验证、日志、限流、业务处理——每一步独立但顺序敏感。
+Walkthrough topic: **the full path of one HTTP request from `app.use` registration to the final `res.send` response.**
 
-**Repack 到目标 repo**：Express 把这个流水线建模成一个 **Layer 链表 + Router 树**——`app.use(fn)` 把 fn 包装成一个 Layer 加到链表里，请求来了从头遍历这个链表。
+---
 
-**最简骨架预览**：
+### §0. General view
+
+> Modern web frameworks almost all use the **middleware chain** abstraction — a request comes in, passes through a list of functions in registration order, each of which can modify req/res and hand control off via `next()`.
+
+**Academic / industry core insight**: this pattern came from Doug Crockford's Pipe-and-Filter architecture, was first used in Node.js by Connect (2010), and Express inherited it to become the de facto standard. The core insight: HTTP request processing is essentially "pipeline processing" — authentication, logging, rate limiting, business handling — each step independent but order-sensitive.
+
+**Repack to target repo**: Express models this pipeline as a **Layer linked list + Router tree** — `app.use(fn)` wraps `fn` into a Layer and appends it to the list; when a request arrives, it walks from the head of the list.
+
+**Minimal skeleton preview**:
 
 ```javascript
-// 一眼看懂的 12 行最简实现
+// 12-line minimal implementation, immediately readable
 function createApp() {
-  const stack = [];  // middleware 链
+  const stack = [];  // middleware chain
   function app(req, res) {
     let i = 0;
     function next() {
       const layer = stack[i++];
       if (!layer) return res.end('404');
-      layer(req, res, next);  // 把 next 传给 middleware
+      layer(req, res, next);  // pass next to the middleware
     }
     next();
   }
@@ -64,61 +64,61 @@ function createApp() {
 }
 ```
 
-**延伸阅读**：参见 `resources/articles/express-architecture.md` 和 `stage-1-foundations/02-web-framework-patterns.md`。
+**Further reading**: see `resources/articles/express-architecture.md` and `stage-1-foundations/02-web-framework-patterns.md`.
 
 ---
 
-### §1. 这个模块解决什么问题
+### §1. What problem does this module solve
 
-#### §1.1 反向论证
+#### §1.1 Reverse argument
 
-如果没有 middleware 链，每个请求处理函数都要自己写身份验证、日志、错误处理、限流——重复代码爆炸，且改一个地方要改几十个文件。
+Without a middleware chain, every request handler would have to write its own auth / logging / error handling / rate limiting — code explosion, and one change touches dozens of files.
 
-#### §1.2 业界三种通用解法对比
+#### §1.2 Comparison of 3 common solutions
 
-| 方案 | 特点 | 代表 |
+| Solution | Characteristics | Representative |
 |------|------|------|
-| Servlet Filter | 配置文件声明顺序，类继承实现 | Java Servlet API |
-| Decorator Chain | 装饰器模式，链式语法 | Flask before_request / after_request |
-| 函数式 Middleware 链 | 函数签名 `(req, res, next) => void` | **Express / Koa** |
+| Servlet Filter | Order declared in config; subclass-based | Java Servlet API |
+| Decorator Chain | Decorator pattern, chained syntax | Flask before_request / after_request |
+| Functional middleware chain | Function signature `(req, res, next) => void` | **Express / Koa** |
 
-#### §1.3 一句话定位
+#### §1.3 One-sentence positioning
 
-**Express 的 middleware 链是把"HTTP 请求加工流水线"用最简单的函数签名 `(req, res, next)` 实现的注册-遍历模式。**
+**Express's middleware chain implements the "HTTP request processing pipeline" with the simplest function signature `(req, res, next)`, plus a register-and-traverse pattern.**
 
 ---
 
-### §2. 核心概念
+### §2. Core concepts
 
-#### §2.1 关键术语
+#### §2.1 Key glossary
 
-| 术语 | 英文 | 一句话定义 |
+| Term | English | One-sentence definition |
 |------|------|-----------|
-| 中间件 | middleware | 签名 `(req, res, next) => void` 的函数，加工请求/响应或决定是否传给下一个 |
-| 层 | Layer | Express 内部把每个 middleware 包成的对象，含路径匹配信息 |
-| 路由器 | Router | 一组 middleware 的容器，支持嵌套（mini-app） |
-| 调度函数 | next | 由 Express 注入的回调，调用它把控制权交给下一个 middleware |
-| 错误中间件 | error middleware | 签名带 4 个参数 `(err, req, res, next)`，专门处理上游抛错 |
+| middleware | middleware | A function with signature `(req, res, next) => void` that modifies req/res or decides whether to pass to the next |
+| Layer | Layer | Express's internal wrapper around each middleware, including path-match info |
+| Router | Router | A container of middlewares; supports nesting (mini-app) |
+| next | next | The callback Express injects; calling it hands control to the next middleware |
+| error middleware | error middleware | A signature with 4 args `(err, req, res, next)`; handles upstream errors |
 
-#### §2.2 通用概念 → Express 实现的对照表
+#### §2.2 General-concept → Express implementation
 
-| 通用概念 | Express 里的实现 |
+| General concept | Implementation in Express |
 |---------|----------------|
-| middleware 注册 | `app.use(path, fn)` → 创建 Layer 加入 router stack |
-| 请求遍历链 | `Layer.handle_request(req, res, next)` 递归调用 |
-| 路径匹配 | `Layer.match(path)` 用 path-to-regexp |
-| 错误冒泡 | `next(err)` 跳过普通 middleware，找到下一个 error middleware |
+| middleware registration | `app.use(path, fn)` → creates a Layer, appends to router stack |
+| request traversal | `Layer.handle_request(req, res, next)` recursive call |
+| path matching | `Layer.match(path)` using path-to-regexp |
+| error bubbling | `next(err)` skips normal middleware and finds the next error middleware |
 
 ---
 
-### §3. 整体架构
+### §3. Overall architecture
 
-#### §3.1 组件关系图
+#### §3.1 Component diagram
 
 ```mermaid
 flowchart TB
   Req[HTTP Request] --> App[Express app]
-  App --> Router[主 Router stack]
+  App --> Router[main Router stack]
   Router --> L1[Layer 1: logger]
   Router --> L2[Layer 2: auth]
   Router --> L3[Layer 3: SubRouter]
@@ -127,49 +127,49 @@ flowchart TB
   L3b --> Res[Response]
 ```
 
-#### §3.2 关键设计决策
+#### §3.2 Key design decisions
 
-ADR（Architecture Decision Record，记录某个设计决策为什么这样定的简短文档）-1：用**函数签名**而不是**类继承**做 middleware
+ADR (Architecture Decision Record — a short doc recording why a design decision was made) -1: use **function signature** rather than **class inheritance** for middleware
 
-- **Context（背景）**：早期 Java Servlet 用 Filter 接口（class implements Filter），Node.js 出来后社区在思考更轻量的写法
-- **Decision（决策）**：Express 选用 `(req, res, next) => void` 这种 plain function 签名
-- **Consequence（后果）**：
-  - ✅ 学习曲线极平——会写函数就会写 middleware
-  - ✅ 测试简单——middleware 就是普通函数，mock req/res 即可
-  - ✅ 组合自由——middleware 可以是匿名箭头、可以是模块导出
-  - ❌ 错误处理需要约定（4 参数的 error middleware），不如类型系统保证可靠
+- **Context**: early Java Servlet used the Filter interface (class implements Filter); after Node.js came out, the community looked for something lighter
+- **Decision**: Express picked the plain function signature `(req, res, next) => void`
+- **Consequence**:
+  - ✅ Extremely flat learning curve — if you can write a function, you can write middleware
+  - ✅ Easy to test — middleware is just a function; mock req/res
+  - ✅ Free composition — middleware can be an anonymous arrow function or a module export
+  - ❌ Error handling needs convention (4-arg error middleware), less guaranteed than a type system
 
 ---
 
-### §4. 最简对照法实战
+### §4. Minimal Comparison Method in action
 
-#### §4.0 高层级代码框架
+#### §4.0 High-level code map
 
 ```
-HTTP 请求进入
+HTTP request enters
     │
     ▼
-node_modules/express/lib/application.js:140  ← app(req, res) 入口
-    │ (调用 router.handle)
+node_modules/express/lib/application.js:140  ← app(req, res) entry
+    │ (calls router.handle)
     ▼
-lib/router/index.js:138                       ← Router.handle 函数
+lib/router/index.js:138                       ← Router.handle function
     │
-    └── 关注这里的几行：
-        - line 138: handle()              ← 接收请求，启动遍历
-        - line 199: next()                 ← 调度下一个 layer
-        - line 280: layer.handle_request   ← 实际调用 middleware 函数
+    └── Focus on these lines here:
+        - line 138: handle()              ← receives request, starts traversal
+        - line 199: next()                 ← dispatches to next layer
+        - line 280: layer.handle_request   ← actually calls the middleware function
 ```
 
-#### §4.1 Step 1：权威最简实现（引用源 + 摘要双区块）
+#### §4.1 Step 1: authoritative minimal implementation (reference + summary)
 
-**最简实现来源**（**由 Phase 2C 网络搜索 + 用户评估确认**，这里假设学生在 stage-0 选了某个 from-scratch beginner repo）：
+**Minimal implementation source** (**vetted by Phase 2C web search + user evaluation**; assume the student picked some from-scratch beginner repo in stage-0):
   `{stage-0-fundamentals/cloned/express-from-scratch}/middleware-chain.js:1-30`
-**为什么是权威最简实现**：30 行就实现了"app.use + next 链 + 路径匹配"三个核心，无任何外部依赖。学生在 stage-0 跑过、改过，认知锚点最强。
+**Why this is authoritative**: 30 lines implement "app.use + next chain + path matching" — three core concepts, no external dependencies. The student has run and modified it in stage-0; strongest cognitive anchor.
 
-**5-10 行伪代码摘要**：
+**5-10 line pseudocode summary**:
 
 ```javascript
-// 改编自 stage-0 beginner repo，剥离 path matching / error handling，保留 next() 链骨架
+// Adapted from stage-0 beginner repo. Strips path matching / error handling, keeps next() chain skeleton
 function createApp() {
   const stack = [];
   function app(req, res) {
@@ -177,7 +177,7 @@ function createApp() {
     (function next() {
       const layer = stack[i++];
       if (!layer) return res.end('404');
-      layer(req, res, next);  // ← 关键：把 next 传给当前 middleware
+      layer(req, res, next);  // ← key: pass next to current middleware
     })();
   }
   app.use = fn => stack.push(fn);
@@ -185,11 +185,11 @@ function createApp() {
 }
 ```
 
-#### §4.2 Step 2：Express 对应代码
+#### §4.2 Step 2: Express's matching code
 
 ```javascript
 // repos/express/lib/router/index.js:138-199
-// 对应权威最简版的：next() 链调度入口
+// Corresponds to minimal version's: next() chain dispatch entry
 proto.handle = function handle(req, res, out) {
   var self = this;
   var idx = 0;
@@ -199,230 +199,230 @@ proto.handle = function handle(req, res, out) {
   function next(err) {
     var layer = self.stack[idx++];
     // ... (omitted 40 lines: error handling, route matching, layer.match)
-    layer.handle_request(req, res, next);  // ← 对应最简版 layer(req, res, next)
+    layer.handle_request(req, res, next);  // ← matches minimal version's layer(req, res, next)
   }
 }
 ```
 
-#### §4.3 Step 3：三列对照表
+#### §4.3 Step 3: three-column comparison table
 
-| 最简版本 | Express 代码位置 | 说明 |
+| Minimal version | Express code location | Explanation |
 |---------|---------------|------|
-| `const stack = []` | `Router.prototype.stack` in `router/index.js:48` | 数组 → Router 实例上的属性，支持嵌套 |
-| `stack.push(fn)` | `Router.use()` in `router/index.js:431` | 直接 push → 包装成 `Layer(path, fn)` 对象 |
-| `layer(req, res, next)` | `layer.handle_request(req, res, next)` in `router/layer.js:86` | 直接调用 → 包装 try/catch + Promise 支持 |
-| `if (!layer) return res.end('404')` | `done(layerError)` in `router/index.js:67` | 简单 404 → 完整 finalhandler 链（错误页 / 静态文件 fallback / etc） |
+| `const stack = []` | `Router.prototype.stack` in `router/index.js:48` | Array → property on the Router instance; supports nesting |
+| `stack.push(fn)` | `Router.use()` in `router/index.js:431` | Plain push → wrapped into a `Layer(path, fn)` object |
+| `layer(req, res, next)` | `layer.handle_request(req, res, next)` in `router/layer.js:86` | Direct call → wrapped in try/catch + Promise support |
+| `if (!layer) return res.end('404')` | `done(layerError)` in `router/index.js:67` | Simple 404 → full finalhandler chain (error page / static file fallback / etc) |
 
-#### §4.4 Step 4：工业级增强差异图
+#### §4.4 Step 4: industrial enhancement diff
 
 ```
-最简版本 (30 行)                      Express 增强 (~1500 行 router 部分)
+Minimal version (30 lines)             Express enhanced (~1500 lines of router code)
 ─────────────────                      ──────────────────────────────────────
-const stack = []          →    + Layer 对象包装（path / method / params）
-                                + Sub-Router 嵌套支持
-                                + 路径前缀挂载（app.use('/api', subRouter)）
+const stack = []          →    + Layer object wrapping (path / method / params)
+                                + sub-Router nesting support
+                                + path prefix mounting (app.use('/api', subRouter))
 
-layer(req, res, next)     →    + try/catch（同步异常捕获）
-                                + Promise 支持（async middleware）
-                                + Error middleware 路由（4 参数函数）
-                                + Layer.match 路径正则匹配（path-to-regexp）
+layer(req, res, next)     →    + try/catch (sync exception capture)
+                                + Promise support (async middleware)
+                                + Error middleware routing (4-arg function)
+                                + Layer.match path regex (path-to-regexp)
 
-next()                    →    + next('route') 跳过当前 route 剩余 layer
-                                + next('router') 跳出当前 sub-router
-                                + 错误冒泡（next(err) 找下一个 error middleware）
+next()                    →    + next('route') skips remaining layers in current route
+                                + next('router') exits current sub-router
+                                + Error bubbling (next(err) finds the next error middleware)
 ─────────────────                      ──────────────────────────────────────
-核心原则：多出来的不是"更多概念"，是"把同样的事做得更健壮"
+Core principle: the extras aren't "more concepts" — they're "doing the same thing more robustly"
 ```
 
 ---
 
-### §5. 代码导航
+### §5. Code navigation
 
-#### 第 1 轮（30 分钟）：追踪一条 GET 请求从入口到 handler
+#### Round 1 (30 min): trace one GET request from entry to handler
 
-1. 打开 `repos/express/lib/application.js`，搜索 `app.handle`（约第 167 行附近）
-2. 关注 line 167-184：这是 HTTP 请求进入 Express 的入口
-3. 找到 line 175：`router.handle(req, res, done)` —— 把请求转给主 Router
+1. Open `repos/express/lib/application.js`, search for `app.handle` (around line 167)
+2. Focus on lines 167-184: this is the HTTP entry into Express
+3. Find line 175: `router.handle(req, res, done)` — hands the request to the main Router
 
-#### 第 2 轮（30 分钟）：理解 next() 链
+#### Round 2 (30 min): understand the next() chain
 
-1. 打开 `repos/express/lib/router/index.js`，搜索 `proto.handle`（约第 138 行）
-2. 关注 line 199-280：next 函数的实现
-3. 找到 line 280：`layer.handle_request(req, res, next)` —— 这是最简版 `layer(req, res, next)` 在 Express 里的真身
-
----
-
-### §6. 检验问题
-
-- **概念检查**：`exercises/concept-checks.md#04-express-middleware-chain`
-- **代码定位**：`exercises/code-finding.md#04-express-middleware-chain`
-- **迁移应用**：`exercises/transfer.md#04-express-middleware-chain`
+1. Open `repos/express/lib/router/index.js`, search for `proto.handle` (around line 138)
+2. Focus on lines 199-280: the implementation of the next function
+3. Find line 280: `layer.handle_request(req, res, next)` — the industrial version of minimal version's `layer(req, res, next)`
 
 ---
 
-### §7. 对你目标项目的启发
+### §6. Test questions
 
-#### §7.1 可以直接复用的设计
+- **Concept check**: `exercises/concept-checks.md#04-express-middleware-chain`
+- **Code finding**: `exercises/code-finding.md#04-express-middleware-chain`
+- **Transfer**: `exercises/transfer.md#04-express-middleware-chain`
 
-| Express 的设计 | 在你项目里怎么用 |
+---
+
+### §7. Implications for your project
+
+#### §7.1 Designs you can reuse
+
+| Express's design | How to use in your project |
 |--------------|-----------------|
-| 函数式 middleware 签名 | 你做 API gateway / RPC 服务时，用 `(req, res, next) => void` 替代继承层级 |
-| next() 链调度 | 任何"加工流水线"场景（日志 / 限流 / 鉴权）都可以套用 |
+| Functional middleware signature | If you're building an API gateway / RPC service, use `(req, res, next) => void` instead of inheritance hierarchies |
+| next() chain dispatch | Any "pipeline processing" scenario (logging / rate limiting / auth) can use this |
 
-#### §7.2 需要改造的地方
+#### §7.2 Things that need to change
 
-| Express 的设计 | 为什么不适合你 | 怎么改 |
+| Express's design | Why it doesn't fit you | How to change |
 |--------------|--------------|-------|
-| 同步 next() | 你做异步 worker pool 时，next 应该返回 Promise | 改为 async middleware，next 改返 Promise |
+| Synchronous next() | If you're building an async worker pool, next should return a Promise | Change to async middleware; next returns a Promise |
 
 ---
 
-### §8. 延伸阅读
+### §8. Further reading
 
-- Tier 1：[Express 官方 router 源码注释](https://github.com/expressjs/express/blob/master/lib/router/index.js)
-- Tier 2：[Koa 对 Express 的反思和改造](https://github.com/koajs/koa/blob/master/docs/koa-vs-express.md)
-
----
-
-## 示例二：数据库内核领域 / SQLite（B-tree cursor）
-
-**假设场景**：学生想学数据库内核，目标 repo 选了 [sqlite/sqlite](https://github.com/sqlite/sqlite)（或镜像）。学生在 stage-0 跑通了 `cstack/db_tutorial`（一个 13 part 的 from-scratch SQLite 风格 DB）。
-
-walkthrough 主题：**一条 SELECT 查询如何通过 B-tree cursor 遍历数据页**。
+- Tier 1: [Express official router source with comments](https://github.com/expressjs/express/blob/master/lib/router/index.js)
+- Tier 2: [Koa's reflections on Express](https://github.com/koajs/koa/blob/master/docs/koa-vs-express.md)
 
 ---
 
-### §0. 通用视角
+## Example 2: database internals / SQLite (B-tree cursor)
 
-> 数据库内核的核心问题是"如何在不能一次把数据装进内存时，高效查到行"。**B-tree** 是公认的答案——它把数据组织成"页（page）"为单位的树，每页大约 4KB-16KB，对应一次磁盘 IO。**cursor** 是遍历这棵树的状态机。
+**Hypothetical scenario**: student wants to learn database internals; target repo is [sqlite/sqlite](https://github.com/sqlite/sqlite) (or a mirror). In stage-0 the student worked through `cstack/db_tutorial` (a 13-part from-scratch SQLite-style DB).
 
-**学术/工程界的核心洞察**：B-tree 是 1971 年 Bayer 和 McCreight 提出的（不是 Bell 实验室的 Comer 综述里 1979 才系统总结），核心洞察：**节点的扇出（fanout）= 一次 IO 能读多少 key**——扇出越大，树越浅，查询 IO 次数越少。SQLite 用 4096 字节默认页大小 + 平均 200 key/page，10 亿行只需要 4 层树深。
+Walkthrough topic: **how a SELECT query traverses data pages through a B-tree cursor**.
 
-**Repack 到目标 repo**：SQLite 的 `btree.c`（约 1.1 万行）就是把这个理论落地到磁盘文件 + WAL（Write-Ahead Logging，预写日志，保证崩溃恢复）的工程实现。cursor 是用户接触的对外 API——`sqlite3BtreeFirst()` / `sqlite3BtreeNext()` 这种。
+---
 
-**最简骨架预览**：
+### §0. General view
+
+> The core problem of database internals is "how do you efficiently query rows when you can't fit all the data in memory?" **B-tree** is the agreed answer — organize data into a tree of "pages" (around 4KB-16KB each, matching one disk IO). The **cursor** is the state machine that walks this tree.
+
+**Academic / industry core insight**: B-trees were proposed in 1971 by Bayer and McCreight (not 1979 as Comer's Bell-Labs survey suggested), key insight: **a node's fanout = how many keys one IO can read** — bigger fanout, shallower tree, fewer IOs per query. SQLite uses a 4096-byte default page + average 200 keys/page; 1 billion rows need only a 4-level tree.
+
+**Repack to target repo**: SQLite's `btree.c` (~11k lines) lands this theory on disk files + WAL (Write-Ahead Logging — log before write, ensures crash recovery). The cursor is the user-facing API — things like `sqlite3BtreeFirst()` / `sqlite3BtreeNext()`.
+
+**Minimal skeleton preview**:
 
 ```c
-// 一眼看懂的 15 行最简实现
+// 15-line minimal implementation, immediately readable
 typedef struct {
-  Page *page;       // 当前所在页
-  int cell_index;   // 当前页内的 cell 偏移
+  Page *page;       // current page
+  int cell_index;   // cell offset within page
 } Cursor;
 
 Row* cursor_next(Cursor *c) {
   if (c->cell_index >= c->page->num_cells) {
-    c->page = c->page->next_leaf;  // 跳到下一个叶子页
+    c->page = c->page->next_leaf;  // jump to next leaf page
     c->cell_index = 0;
   }
   return read_cell(c->page, c->cell_index++);
 }
 ```
 
-**延伸阅读**：参见 `resources/papers/btree-bayer-1971.pdf` 和 `stage-1-foundations/02-storage-engine-patterns.md`。
+**Further reading**: see `resources/papers/btree-bayer-1971.pdf` and `stage-1-foundations/02-storage-engine-patterns.md`.
 
 ---
 
-### §1. 这个模块解决什么问题
+### §1. What problem does this module solve
 
-#### §1.1 反向论证
+#### §1.1 Reverse argument
 
-如果数据库不用 B-tree 用链表，查 1 亿行要扫 1 亿次磁盘 IO；如果不用 cursor 用"一次读全部"，10GB 表查 10 行也要 10GB 内存。
+If a database used a linked list instead of B-tree, querying 100M rows would mean 100M disk IOs. If you didn't use a cursor and just "read everything," querying 10 rows from a 10GB table would need 10GB of memory.
 
-#### §1.2 业界三种通用解法对比
+#### §1.2 Comparison of 3 common solutions
 
-| 方案 | 特点 | 代表 |
+| Solution | Characteristics | Representative |
 |------|------|------|
-| Hash Index | 等值查询 O(1)，无法范围查询 | Redis dict |
-| LSM-tree | 写入快读慢，需 compaction | RocksDB / Cassandra |
-| **B-tree** | 读写均衡，范围查询友好 | **SQLite / MySQL InnoDB / PostgreSQL** |
+| Hash Index | O(1) equality lookup; can't do range queries | Redis dict |
+| LSM-tree | Fast writes, slow reads; needs compaction | RocksDB / Cassandra |
+| **B-tree** | Balanced read/write, range-query friendly | **SQLite / MySQL InnoDB / PostgreSQL** |
 
-#### §1.3 一句话定位
+#### §1.3 One-sentence positioning
 
-**SQLite 的 B-tree cursor 是把"按 key 顺序遍历磁盘数据页"封装成迭代器状态机的核心抽象。**
+**SQLite's B-tree cursor wraps "iterating disk data pages by key order" into a core iterator-state-machine abstraction.**
 
 ---
 
-### §2. 核心概念
+### §2. Core concepts
 
-#### §2.1 关键术语
+#### §2.1 Key glossary
 
-| 术语 | 英文 | 一句话定义 |
+| Term | English | One-sentence definition |
 |------|------|-----------|
-| 页 | Page | 磁盘 IO 的最小单位（SQLite 默认 4096 字节） |
-| 单元 | Cell | 页内一行数据的存储单元（含 key + payload） |
-| 游标 | Cursor | 指向某个页 + 页内某个 cell 的状态对象 |
-| B-tree 节点 | BtNode | 内部节点（存子页指针）或叶子节点（存 cell） |
-| WAL | Write-Ahead Logging | 写之前先写日志，崩溃可恢复 |
+| Page | Page | Smallest unit of disk IO (default 4096 bytes in SQLite) |
+| Cell | Cell | One row's storage unit within a page (key + payload) |
+| Cursor | Cursor | State object pointing at a page + a cell inside it |
+| BtNode | BtNode | Either an internal node (child page pointers) or a leaf (cells) |
+| WAL | Write-Ahead Logging | Write the log first, recoverable on crash |
 
-#### §2.2 通用概念 → SQLite 实现的对照表
+#### §2.2 General-concept → SQLite implementation
 
-| 通用概念 | SQLite 里的实现 |
+| General concept | Implementation in SQLite |
 |---------|----------------|
-| 打开 cursor | `sqlite3BtreeCursor()` in `btree.c` |
-| 移到第一个 cell | `sqlite3BtreeFirst()` |
-| 移到下一个 cell | `sqlite3BtreeNext()` |
-| 读 cell payload | `sqlite3BtreePayload()` |
+| Open a cursor | `sqlite3BtreeCursor()` in `btree.c` |
+| Move to first cell | `sqlite3BtreeFirst()` |
+| Move to next cell | `sqlite3BtreeNext()` |
+| Read cell payload | `sqlite3BtreePayload()` |
 
 ---
 
-### §3. 整体架构
+### §3. Overall architecture
 
-#### §3.1 组件关系图
+#### §3.1 Component diagram
 
 ```mermaid
 flowchart TB
   SQL[SELECT * FROM t WHERE id>5] --> Parser[SQL Parser]
   Parser --> Plan[Query Planner]
-  Plan --> VDBE[VDBE 字节码生成]
-  VDBE --> Cursor[Btree Cursor 开启]
-  Cursor --> Page1[Page 1 内部节点]
-  Page1 --> Page5[Page 5 叶子节点]
-  Page5 --> Cell[读 Cell payload]
-  Cell --> Result[返回行]
+  Plan --> VDBE[VDBE bytecode gen]
+  VDBE --> Cursor[Btree Cursor open]
+  Cursor --> Page1[Page 1 internal node]
+  Page1 --> Page5[Page 5 leaf node]
+  Page5 --> Cell[read Cell payload]
+  Cell --> Result[return row]
 ```
 
-#### §3.2 关键设计决策
+#### §3.2 Key design decisions
 
-ADR（Architecture Decision Record，记录设计决策的简短文档）-1：cursor 是**显式状态机**而不是**迭代器协议**
+ADR (Architecture Decision Record — a short doc recording why a design decision was made) -1: cursor is an **explicit state machine** rather than an **iterator protocol**
 
-- **Context（背景）**：C 语言没有 Python 那种 generator / iterator protocol
-- **Decision（决策）**：SQLite 把 cursor 设计成显式 struct，所有操作通过 `sqlite3BtreeXxx(cursor, ...)` 函数
-- **Consequence（后果）**：
-  - ✅ 状态可控——cursor 状态可序列化（用于 checkpoint）
-  - ✅ 内存可预测——一个 cursor 大约 200 字节，可控
-  - ❌ 调用者需要手动管理 cursor 生命周期（open / close 对称）
+- **Context**: C has no Python-style generator / iterator protocol
+- **Decision**: SQLite designs the cursor as an explicit struct; all operations go through `sqlite3BtreeXxx(cursor, ...)` functions
+- **Consequence**:
+  - ✅ Controllable state — the cursor state can be serialized (for checkpoint)
+  - ✅ Predictable memory — one cursor is around 200 bytes
+  - ❌ The caller has to manually manage the cursor lifecycle (open / close symmetry)
 
 ---
 
-### §4. 最简对照法实战
+### §4. Minimal Comparison Method in action
 
-#### §4.0 高层级代码框架
+#### §4.0 High-level code map
 
 ```
-SELECT 执行
+SELECT executes
     │
     ▼
-repos/sqlite/src/vdbe.c:5234       ← OP_OpenRead 字节码处理
-    │ (调用 sqlite3BtreeCursor)
+repos/sqlite/src/vdbe.c:5234       ← OP_OpenRead bytecode handling
+    │ (calls sqlite3BtreeCursor)
     ▼
-repos/sqlite/src/btree.c:6789      ← cursor 初始化
+repos/sqlite/src/btree.c:6789      ← cursor initialization
     │
-    └── 关注这里的几行：
-        - line 6789: sqlite3BtreeCursor   ← 创建 cursor struct
-        - line 7234: sqlite3BtreeNext     ← 移动到下一个 cell（核心）
-        - line 7891: moveToLeftmost       ← 进入子页时的下钻
+    └── Focus on these lines:
+        - line 6789: sqlite3BtreeCursor   ← creates the cursor struct
+        - line 7234: sqlite3BtreeNext     ← moves to next cell (the core)
+        - line 7891: moveToLeftmost       ← descent when entering child pages
 ```
 
-#### §4.1 Step 1：权威最简实现（引用源 + 摘要双区块）
+#### §4.1 Step 1: authoritative minimal implementation (reference + summary)
 
-**最简实现来源**（**由 Phase 2C 网络搜索 + 用户评估确认**，这里假设学生在 stage-0 选了 `cstack/db_tutorial` Part 8-10 的 B-tree 实现）：
-  `{stage-0-fundamentals/cloned/db_tutorial}/db.c:780-820`（Part 10 leaf node 实现）
-**为什么是权威最简实现**：13 part 教程一步步从 hash table 演进到 B-tree，line 780-820 是 cursor 在叶子节点遍历的核心，~40 行 C 代码。学生在 stage-0 完整跑过这 13 part，对每一行都熟。
+**Minimal implementation source** (**vetted by Phase 2C web search + user evaluation**; assume the student picked `cstack/db_tutorial` Part 8-10 B-tree implementation in stage-0):
+  `{stage-0-fundamentals/cloned/db_tutorial}/db.c:780-820` (Part 10 leaf node implementation)
+**Why this is authoritative**: a 13-part tutorial that walks step by step from hash table to B-tree; lines 780-820 are the core of cursor traversal in a leaf node, ~40 lines of C. The student ran all 13 parts in stage-0 and knows every line.
 
-**5-10 行伪代码摘要**：
+**5-10 line pseudocode summary**:
 
 ```c
-// 改编自 db_tutorial Part 10，剥离磁盘 IO/分裂处理，保留 cursor 遍历骨架
+// Adapted from db_tutorial Part 10, stripped of disk IO / split handling, keeps cursor traversal skeleton
 typedef struct {
   Pager *pager;
   uint32_t page_num;
@@ -433,136 +433,136 @@ Row* cursor_next(Cursor *c) {
   Page *page = get_page(c->pager, c->page_num);
   c->cell_num++;
   if (c->cell_num >= leaf_node_num_cells(page)) {
-    c->page_num = *leaf_node_next_leaf(page);  // ← 链表式跳页
+    c->page_num = *leaf_node_next_leaf(page);  // ← linked-list-style page hop
     c->cell_num = 0;
   }
   return leaf_node_value(page, c->cell_num - 1);
 }
 ```
 
-#### §4.2 Step 2：SQLite 对应代码
+#### §4.2 Step 2: SQLite's matching code
 
 ```c
 // repos/sqlite/src/btree.c:7234
-// 对应权威最简版的：cursor_next() 主体
+// Corresponds to minimal version's: cursor_next() body
 int sqlite3BtreeNext(BtCursor *pCur, int flags) {
   MemPage *pPage;
   pCur->ix++;
   pPage = pCur->pPage;
   if (pCur->ix >= pPage->nCell) {
     // ... (omitted 80 lines: parent page traversal, balance check, lock)
-    rc = moveToNext(pCur);  // ← 对应最简版 c->page_num = next_leaf
+    rc = moveToNext(pCur);  // ← matches minimal version's c->page_num = next_leaf
   }
   return SQLITE_OK;
 }
 ```
 
-#### §4.3 Step 3：三列对照表
+#### §4.3 Step 3: three-column comparison table
 
-| 最简版本 | SQLite 代码位置 | 说明 |
+| Minimal version | SQLite code location | Explanation |
 |---------|---------------|------|
-| `Cursor` struct | `BtCursor` in `btreeInt.h:548` | 简单 struct → 50+ 字段（含 saved state / overflow / shared cache） |
-| `cursor_next()` 直接++ | `sqlite3BtreeNext()` in `btree.c:7234` | 直接自增 → balance 检查 + 父页回溯 + 锁状态 |
-| `get_page(pager, num)` 直接读 | `getAndInitPage()` in `btree.c:1289` | 直接 IO → page cache 查询 + WAL 检查 + checksum |
-| `next_leaf 链表跳` | `moveToNext()` + 父页回溯 in `btree.c:6201` | 单向链表 → B-tree 真正的树形回溯 |
+| `Cursor` struct | `BtCursor` in `btreeInt.h:548` | Simple struct → 50+ fields (saved state / overflow / shared cache) |
+| `cursor_next()` plain ++ | `sqlite3BtreeNext()` in `btree.c:7234` | Plain increment → balance check + parent backtrack + lock state |
+| `get_page(pager, num)` direct read | `getAndInitPage()` in `btree.c:1289` | Direct IO → page cache lookup + WAL check + checksum |
+| `next_leaf` linked-list hop | `moveToNext()` + parent backtrack in `btree.c:6201` | One-way list → real B-tree tree-walk backtracking |
 
-#### §4.4 Step 4：工业级增强差异图
+#### §4.4 Step 4: industrial enhancement diff
 
 ```
-最简版本 (40 行)                      SQLite 增强 (~11000 行 btree.c)
+Minimal version (40 lines)              SQLite enhanced (~11000 lines of btree.c)
 ─────────────────                      ──────────────────────────────────────
-Cursor struct (3 字段)    →    + saved cursor state（事务支持）
-                                + overflow page 处理（大 cell）
-                                + shared cache 状态
-                                + write cursor vs read cursor 区分
+Cursor struct (3 fields)  →    + saved cursor state (transaction support)
+                                + overflow page handling (large cells)
+                                + shared cache state
+                                + write cursor vs read cursor distinction
 
-cursor_next() 自增        →    + balance 后的节点合并 / 分裂检查
-                                + 父页回溯（不只是链表跳）
-                                + 锁状态机（SHARED / RESERVED / EXCLUSIVE）
+cursor_next() ++          →    + node merge / split check after balance
+                                + parent page backtracking (not just list hop)
+                                + lock state machine (SHARED / RESERVED / EXCLUSIVE)
 
-get_page() 直接 IO        →    + page cache（LRU 淘汰）
-                                + WAL 检查（最新写在 WAL 不在主文件）
-                                + checksum 验证
-                                + mmap 优化路径
+get_page() direct IO      →    + page cache (LRU eviction)
+                                + WAL check (latest writes are in WAL, not main file)
+                                + checksum verification
+                                + mmap optimization path
 
-next_leaf 单向链表        →    + 真正的 B-tree 树形结构
-                                + 内部节点 vs 叶子节点
-                                + auto-vacuum 时的页号变化
+next_leaf one-way list    →    + real B-tree tree structure
+                                + internal nodes vs leaf nodes
+                                + page number shifts during auto-vacuum
 ─────────────────                      ──────────────────────────────────────
-核心原则：多出来的不是"更多概念"，是"把同样的事做得更健壮、更安全、更可恢复"
+Core principle: the extras aren't "more concepts" — they're "doing the same thing more robustly, more safely, more recoverably"
 ```
 
 ---
 
-### §5. 代码导航
+### §5. Code navigation
 
-#### 第 1 轮（30 分钟）：追踪一条 SELECT 的 cursor 生命周期
+#### Round 1 (30 min): trace one SELECT's cursor lifecycle
 
-1. 打开 `repos/sqlite/src/vdbe.c`，搜索 `OP_OpenRead`（约第 5234 行）
-2. 关注 line 5234-5290：VDBE 解析到 OP_OpenRead 操作码时如何创建 cursor
-3. 找到 line 5267：`rc = sqlite3BtreeCursor(...)` —— cursor 创建的实际入口
+1. Open `repos/sqlite/src/vdbe.c`, search for `OP_OpenRead` (around line 5234)
+2. Focus on lines 5234-5290: how VDBE handles the OP_OpenRead opcode to create a cursor
+3. Find line 5267: `rc = sqlite3BtreeCursor(...)` — the actual cursor creation entry
 
-#### 第 2 轮（30 分钟）：理解 BtreeNext 的页内推进
+#### Round 2 (30 min): understand BtreeNext's intra-page advance
 
-1. 打开 `repos/sqlite/src/btree.c`，搜索 `sqlite3BtreeNext`（约第 7234 行）
-2. 关注 line 7234-7320：单次 next 的全部分支
-3. 找到 line 7280：`if (pCur->ix >= pPage->nCell)` —— 这是最简版"链表跳页"在工业实现里的真身
-
----
-
-### §6. 检验问题
-
-- **概念检查**：`exercises/concept-checks.md#05-sqlite-btree-cursor`
-- **代码定位**：`exercises/code-finding.md#05-sqlite-btree-cursor`
-- **迁移应用**：`exercises/transfer.md#05-sqlite-btree-cursor`
+1. Open `repos/sqlite/src/btree.c`, search for `sqlite3BtreeNext` (around line 7234)
+2. Focus on lines 7234-7320: all branches of a single next call
+3. Find line 7280: `if (pCur->ix >= pPage->nCell)` — the industrial version of minimal version's "linked-list page hop"
 
 ---
 
-### §7. 对你目标项目的启发
+### §6. Test questions
 
-#### §7.1 可以直接复用的设计
+- **Concept check**: `exercises/concept-checks.md#05-sqlite-btree-cursor`
+- **Code finding**: `exercises/code-finding.md#05-sqlite-btree-cursor`
+- **Transfer**: `exercises/transfer.md#05-sqlite-btree-cursor`
 
-| SQLite 的设计 | 在你项目里怎么用 |
+---
+
+### §7. Implications for your project
+
+#### §7.1 Designs you can reuse
+
+| SQLite's design | How to use in your project |
 |--------------|-----------------|
-| Cursor 显式状态机 | 你做流式数据处理时，用显式 cursor 替代隐式 generator——可序列化 + 状态可控 |
-| Page-based IO | 你做自己的存储引擎时，按页（4KB-16KB）读写比按行更高效 |
+| Explicit cursor state machine | For streaming data processing, use an explicit cursor instead of an implicit generator — serializable + controllable state |
+| Page-based IO | When building your own storage engine, page-based (4KB-16KB) reads/writes are more efficient than per-row |
 
-#### §7.2 需要改造的地方
+#### §7.2 Things that need to change
 
-| SQLite 的设计 | 为什么不适合你 | 怎么改 |
+| SQLite's design | Why it doesn't fit you | How to change |
 |--------------|--------------|-------|
-| 单进程 reader 锁 | 你做分布式存储时单机锁不够 | 改为分布式 lease / Raft commit index |
+| Single-process reader lock | If you're building distributed storage, a single-machine lock isn't enough | Switch to distributed lease / Raft commit index |
 
 ---
 
-### §8. 延伸阅读
+### §8. Further reading
 
-- Tier 1：[Bayer & McCreight 原论文 (1972)](https://github.com/iam-abbas/papers-i-love)
-- Tier 2：[cstack/db_tutorial 完整 13 part](https://cstack.github.io/db_tutorial/)
-- Tier 3：[SQLite 内部文档](https://www.sqlite.org/arch.html)
+- Tier 1: [Bayer & McCreight original paper (1972)](https://github.com/iam-abbas/papers-i-love)
+- Tier 2: [cstack/db_tutorial full 13 parts](https://cstack.github.io/db_tutorial/)
+- Tier 3: [SQLite internal docs](https://www.sqlite.org/arch.html)
 
 ---
 
-## 怎么用这两个示例
+## How to use these two examples
 
-### 给 AI 看的指引
+### Guidance for the AI
 
-AI 在生成实际 walkthrough 时（按 walkthrough-template.md 的九章模板）：
+When generating an actual walkthrough (following walkthrough-template.md's nine-section template):
 
-- 如果目标 repo 是 Web 框架领域 → 参考示例一的语气、术语密度、骨架元素呈现方式
-- 如果目标 repo 是数据库内核领域 → 参考示例二
-- 如果是其他领域（OS / 编译器 / 游戏引擎 / 分布式）→ 套用同九章模板，骨架元素查 `multi-domain-examples.md` §1
+- If the target repo is in the web framework domain → match Example 1's tone, term density, skeleton-element presentation
+- If the target repo is in the database internals domain → match Example 2
+- For other domains (OS / compiler / game engine / distributed) → apply the same nine-section template; look up skeleton elements in `multi-domain-examples.md` §1
 
-### 关键观察：九章模板跨领域是稳定的
+### Key observation: the nine-section template is stable across domains
 
-对比示例一（Web 框架）和示例二（数据库），九章结构（§0-§8）完全一样。变化的只是：
-- §0 引用的学术/工程历史（Pipe-and-Filter 1970s vs B-tree 1971）
-- §2.1 术语表里的具体词（middleware / Layer vs Cell / Cursor）
-- §4 引用的具体代码 file:line
-- §4.4 工业级增强的具体增强项（异步支持 vs page cache / WAL）
+Comparing Example 1 (web framework) and Example 2 (database), the nine-section structure (§0-§8) is identical. What changes:
+- §0 cites different academic / engineering history (Pipe-and-Filter 1970s vs B-tree 1971)
+- §2.1's glossary has different specific terms (middleware / Layer vs Cell / Cursor)
+- §4 cites different code file:lines
+- §4.4's industrial enhancements are different specifics (async support vs page cache / WAL)
 
-这证明了**最简对照法五步**是跨领域通用的——任何领域只要有"核心控制流 + 工业级实现"的对比，就能套这个模板。
+This shows **the five steps of the Minimal Comparison Method are cross-domain general** — any domain that has a "core control flow + industrial implementation" comparison can use this template.
 
-### 未来扩展
+### Future expansion
 
-每次实战教学一个新领域（OS / 编译器 / 游戏引擎），可以把那次的 walkthrough 缩略版回填到本文件作为新示例。本文件会随着 skill 使用经验积累越来越厚。
+Each time we teach a new domain in practice (OS / compiler / game engine), we can backfill the condensed walkthrough from that session as a new example here. This file accumulates depth as the skill is used.

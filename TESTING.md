@@ -1,184 +1,184 @@
-# 测试指南（给受邀朋友）
+# Testing Guide (for invited test buddies)
 
-> 你好——感谢你愿意花时间测试这个 skill。这个文档告诉你**怎么测**和**怎么反馈**，让你的反馈最高效。
+> Hi — thanks for taking the time to test this skill. This doc tells you **how to test** and **how to give feedback** so your input lands where it matters.
 
-整个测试预计耗时：**60-90 分钟**（不包括你真的学完一个领域的时间——那要 8-12 周）。
-
----
-
-## 测试目标
-
-我**不是**让你完整跑完一个领域学习（那要几个月）。我想测的是 **skill 触发后到产物生成 + 第一次教学** 的体验：
-
-1. Phase 0 入口交互对你来说好不好懂、问题是否合理
-2. Phase 2C 找候选 repo 时给你的评估表是否清晰、能否帮你决策
-3. 生成的产物（10 个一级目录）打开后第一印象——你知不知道从哪开始
-4. stage-0 的 `recommended-repos.md` 推荐的 repo 是否真的合格（你点进去看几眼）
-5. stage-1 的第一篇心智模型读起来感觉如何（不需要全读完，扫一下）
-6. AI 跟你对话的语气——是不是像真人老师，还是像生成的卡片
+Total testing time: **60-90 minutes** (not counting actually learning a domain — that takes 8-12 weeks).
 
 ---
 
-## 测试任务
+## What we're testing
 
-请挑**至少 1 个场景**走一遍。如果你想测多个，最好挑跨领域的（如场景 1 + 场景 3）。
+I'm **not** asking you to go through a full domain learning cycle (that's months). I want to test the **trigger-to-artifact-generation-to-first-lesson** experience:
 
-### 场景 1：完全小白小白模式
-
-假装你是某个领域的完全小白（即使你其实是专家）。
-
-```
-你输入：用这个 repo 教我 X
-（X 选一个你**真的没经验**的领域。比如你是前端，选 redis；你是后端，选 v8）
-```
-
-预期 skill 会：
-1. 走 Path A（你带 repo 来）
-2. 问你水平 → 你选 A 级（完全小白）
-3. 判断"小白 + 工业级 repo" → 推荐 stage-0
-4. 跑 Phase 2C 给你找 3-5 个 beginner repo 候选
-5. 让你评估候选
-6. 选完后生成完整产物
-
-### 场景 2：带方向但不知道选 repo
-
-```
-你输入：我想学 Web 框架，但不知道从哪个 repo 入手
-（或者把 "Web 框架" 换成你真的有兴趣的方向）
-```
-
-预期 skill 会：
-1. 走 Path B（你带方向来）
-2. 问你水平 + 学完想做什么
-3. 跑搜索给你 3-5 个目标 repo 候选（如 Express / Koa / Fastify / Hono）
-4. 你选完后再帮你找 stage-0 beginner repo
-5. 生成产物
-
-### 场景 3：模糊探索模式
-
-```
-你输入：我想学点技术，但不知道学什么
-```
-
-预期 skill 会：
-1. 走 Path C（模糊探索）
-2. 用对话式问 1-3 个问题帮你定方向
-3. 如果你答"我也不知道"——会出领域菜单让你点
-4. 收敛到方向后转 Path B 继续
+1. Does the Phase 0 entry interaction feel natural? Are the questions reasonable?
+2. When Phase 2C presents you candidate repos, is the evaluation table clear? Does it help you decide?
+3. When the artifacts (10 top-level directories) are generated, what's your first impression on opening them? Do you know where to start?
+4. Are the repos recommended in `stage-0-fundamentals/recommended-repos.md` actually qualified? (Click into a couple and skim.)
+5. How does the first piece of stage-1 (mental model) read? You don't need to read all of it — just scan.
+6. The AI's tone when talking to you — does it feel like a real teacher, or like generated cards?
 
 ---
 
-## 测试中关注的几个点
+## Testing tasks
 
-走流程时，请**留意下面几个观察点**——回头反馈时具体说哪一步触发了感受：
+Please run through **at least 1 scenario**. If you want to do more, try crossing domains (e.g., Scenario 1 + Scenario 3).
 
-### 体验类
+### Scenario 1: Pretend you're a total beginner
 
-- **第一句话怎么样**：Phase 0 第一问 skill 怎么开口的？让你舒服还是别扭？
-- **语气是否人话**：AI 跟你对话有没有出现你不懂的术语 / 缩写没解释 / "X 给 A，Y 给 B，Z 给 C"这种碎片化短句？
-- **节奏**：从你触发到生成完产物，整个流程多长时间？感觉太啰嗦还是刚好？
-- **互动感**：让你做选择的时候，给你的信息够不够？是不是闭着眼乱选？
+Pretend you're a complete beginner in some domain (even if you're actually an expert).
 
-### 内容类
+```
+You input: "Use this repo to teach me X"
+(Pick X as a domain you really have **no experience** in. E.g., if you're a frontend dev, pick redis; if you're a backend dev, pick v8.)
+```
 
-- **推荐的 repo 合理吗**：Phase 2C 给你的 3-5 个候选——你点进去 GitHub 看几眼，里面 README 里是不是真的用 langchain / spring 这种成熟框架？star 数对吗？
-- **生成的产物结构看得懂吗**：打开生成的目录，root README.md 让你 5 分钟内知道"从哪开始"了吗？
-- **stage-0 graduation-check 合理吗**：打开 `stage-0-fundamentals/graduation-check.md`，5 题感觉过得了/过不了？
+Expected: the skill will
+1. Go down Path A (you brought a repo)
+2. Ask your level → you pick A (total beginner)
+3. Determine "beginner + industrial-scale repo" → recommend stage-0
+4. Run Phase 2C to find 3-5 beginner repo candidates
+5. Let you evaluate the candidates
+6. Generate the full artifacts after you pick
 
-### Bug 类
+### Scenario 2: You have a direction but no specific repo
 
-- **崩了 / 报错 / 流程卡死**：截图 + 给我重现步骤
-- **AI 跳错路径**：你明明带 repo 来的（A），它给你走 Path C（模糊）了
-- **重复问相同问题**：Phase 0 问过的，Phase 1 又问了一遍
+```
+You input: "I want to learn web frameworks but don't know which repo to start with"
+(Or swap "web frameworks" for any direction you actually care about)
+```
+
+Expected: the skill will
+1. Go down Path B (you brought a direction)
+2. Ask your level + what you want to do after
+3. Run a search and give you 3-5 target repo candidates (Express / Koa / Fastify / Hono etc)
+4. Once you pick, then find a stage-0 beginner repo
+5. Generate artifacts
+
+### Scenario 3: Exploring mode
+
+```
+You input: "I want to learn something technical, but I don't know what"
+```
+
+Expected: the skill will
+1. Go down Path C (exploring)
+2. Use a conversational approach with 1-3 questions to help you narrow down
+3. If you say "I don't know" — show you a domain menu to pick from
+4. Once you converge on a direction, switch to Path B
 
 ---
 
-## 反馈模板
+## What to watch for during the test
 
-测试完用下面模板提 GitHub issue 给我。**长短不限，越具体越好**——不需要写成"专业 bug report"，像跟我聊天那样讲就行。
+While you're going through the flow, **keep an eye on these observation points** — when you come back to give feedback, say specifically which step triggered the reaction.
+
+### Experience
+
+- **The opening line**: how does the skill open Phase 0? Comfortable or awkward?
+- **Tone**: does the AI use jargon you don't know? Drop acronyms without explaining? Spit out short fragmented sentences like "X for A, Y for B, Z for C"?
+- **Pacing**: from your trigger to artifact generation, how long total? Feels too long-winded, just right, or too rushed?
+- **Interactivity**: when you're asked to make choices, do you have enough info? Or are you picking blind?
+
+### Content
+
+- **Are recommended repos reasonable?** — click into a couple of the 3-5 candidates Phase 2C gave you. Are they really built on langchain / spring (which would be disqualifying)? Are the star counts right?
+- **Is the generated artifact structure understandable?** Open the directory; can the root README.md tell you "where to start" within 5 minutes?
+- **Does stage-0 graduation-check make sense?** Open `stage-0-fundamentals/graduation-check.md`. Could you actually pass / fail those 5 questions?
+
+### Bugs
+
+- **Crashes / errors / flow stuck**: screenshot + tell me how to reproduce
+- **AI takes the wrong path**: you clearly brought a repo (A), it routed you to Path C (exploring)
+- **Repeated questions**: Phase 0 asked something, then Phase 1 asked it again
+
+---
+
+## Feedback template
+
+After testing, file a GitHub issue using the template below. **Length doesn't matter, specificity does** — no need to write a "professional bug report," just tell me like you'd tell a friend.
 
 ```markdown
-## 测试场景
+## Test scenario
 
-我跑的是场景 ___（1/2/3 或自定义）。
+I ran scenario ___ (1/2/3 or custom).
 
-我假装的角色：___（如"完全没接触过数据库的前端工程师"）
+The role I pretended to be: ___ (e.g., "frontend engineer who's never touched databases")
 
-我选的领域 / repo：___
+Domain / repo I picked: ___
 
-## 整体感受（30 秒版）
+## Overall impression (30-second version)
 
-___（如：流程能跑通，但 Phase 0 第一问让我觉得有点机械；
-推荐的 beginner repo 不错；
-但是生成的 stage-1 第一篇读起来太学术）
+___ (e.g., "Flow works end-to-end, but the Phase 0 opening felt a bit mechanical;
+the recommended beginner repo was solid;
+but the first stage-1 piece read too academic")
 
-## 具体观察
+## Specific observations
 
-### 体验
+### Experience
 
-- 第一句话：___
-- 语气：___
-- 节奏：___（太啰嗦/刚好/太赶）
-- 互动感：___
+- Opening line: ___
+- Tone: ___
+- Pacing: ___ (too long / just right / too rushed)
+- Interactivity: ___
 
-### 内容
+### Content
 
-- 推荐 repo 合理度：___
-- 产物结构清晰度：___
-- stage-0 graduation-check：___
+- Recommended repo reasonableness: ___
+- Artifact structure clarity: ___
+- stage-0 graduation-check: ___
 
-### Bug / 异常
+### Bugs / anomalies
 
-___（如果有）
+___ (if any)
 
-## 我会希望改进的点（按优先级）
+## What I'd want improved (in priority order)
 
 1. ___
 2. ___
 3. ___
 
-## 这个 skill 我会推荐给以下人
+## I'd recommend this skill to
 
-___（如"想从前端转去搞数据库内核的同事"——这帮我理解谁是真实受众）
+___ (e.g., "a coworker switching from frontend to database internals" — this helps me understand who the real audience is)
 
-## 这个 skill 我不会推荐给
+## I wouldn't recommend this skill to
 
-___（如"已经是 senior 的工程师——他们可能觉得太啰嗦"——这帮我理解局限）
+___ (e.g., "already-senior engineers — they might find it too verbose" — this helps me understand the limits)
 ```
 
 ---
 
-## 一些细节问题
+## Some smaller questions
 
-### Q: 我测的时候要真的"学"那个领域吗？
+### Q: Do I actually need to learn the domain while testing?
 
-不需要——你只需要走完 Phase 0 → Phase 4 的流程，看一眼生成的产物结构和 stage-0/stage-1 的开头，给我反馈这个**前置体验**就够了。如果你真的想深入学，那是奖励，不是测试要求。
+No — you only need to go through Phase 0 → Phase 4, look at the generated artifact structure and the opening of stage-0 / stage-1, and give me feedback on that **pre-experience**. If you actually want to dig in further, that's a bonus, not a requirement.
 
-### Q: 我测一个场景大概多久？
+### Q: How long does testing one scenario take?
 
-最快 20-30 分钟（流程跑完 + 扫一眼产物）。最长 60-90 分钟（如果你愿意点开几个 candidate repo 仔细看）。
+Fastest: 20-30 minutes (just run the flow and skim the artifacts). Longest: 60-90 minutes (if you're willing to click through a few candidate repos and look carefully).
 
-### Q: 我不熟教育学 / 不懂 Constructionism / Feynman 这些理论怎么办？
+### Q: I'm not familiar with education theory — Constructionism / Feynman etc. What now?
 
-**完全不需要懂**。这些理论是 skill 内部的设计依据，你作为用户感觉到的应该是"哦这个 skill 不让我跳过基础"、"哦这个 skill 让我用自己的话讲一遍"——你只要观察这种体验对不对你胃口，不需要看 [theory.md](./references/theory.md)。
+**You don't need to know any of it.** Those theories are the design backing of the skill; as a user, what you should feel is "oh this skill doesn't let me skip the basics" or "oh this skill makes me rephrase things in my own words." Just check whether that experience suits you — no need to read [theory.md](./references/theory.md).
 
-### Q: 如果我半路放弃了想停，怎么办？
+### Q: What if I give up partway through?
 
-直接告诉 AI "我要停了" 就行。skill 不会强迫你走完。回头你可以反馈"我在 ___ 步骤放弃了，因为 ___"——**放弃点本身就是宝贵反馈**，说明那地方门槛太高。
+Just tell the AI "I'm stopping" — the skill won't push you to finish. Later you can give feedback like "I dropped off at step ___, because ___" — **the dropout point is itself the best feedback**. It tells me the threshold is too high at that point.
 
-### Q: 我可以邀请其他人一起测吗？
+### Q: Can I invite others to test with me?
 
-可以，前提是他们也是软件工程背景（不然反馈的视角不对）。让他们也按本文档走一遍。
-
----
-
-## 反馈渠道
-
-- **GitHub issue**（推荐）：[新建 issue](https://github.com/CZYCW/learn-via-repo/issues/new)
-- **直接联系作者**：先用 GitHub issue 联系，或者作者会在你测之前私下告诉你联系方式
-
-我会尽快回复每条反馈。**反馈如果触发了 V4 改进，会在 commit message / changelog 里署名感谢你**（如果你不想露名告诉我）。
+Yes, as long as they have a software-engineering background (otherwise the feedback perspective doesn't match). Have them follow this doc.
 
 ---
 
-再次感谢你愿意花时间测——你的每条反馈都会让这个 skill 变得更适合后续真正想学技术的人。
+## Feedback channels
+
+- **GitHub issue** (preferred): [new issue](https://github.com/CZYCW/learn-via-repo/issues/new)
+- **Direct contact**: open a GitHub issue first, or I'll have shared a way to reach me before you started testing
+
+I'll respond to every piece of feedback. **If your feedback triggers a V4-style improvement, I'll credit you in the commit message / changelog** (tell me if you'd rather not be named).
+
+---
+
+Thanks again for spending the time on this — every bit of feedback makes the skill more useful for the people who come after you to actually learn something with it.
